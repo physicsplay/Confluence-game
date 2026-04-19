@@ -1,0 +1,2155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Confluence — Guardians of our Waters</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg0:#04101c;
+    --bg1:#071827;
+    --bg2:#0d2740;
+    --bg3:#123b56;
+    --panel:rgba(10,24,39,0.68);
+    --panel2:rgba(16,35,57,0.84);
+    --panel3:rgba(255,255,255,0.04);
+    --line:rgba(255,255,255,0.11);
+    --line2:rgba(255,255,255,0.22);
+    --text:#edf6ff;
+    --dim:#b7cbe0;
+    --mute:#7a90a8;
+    --cyan:#74e6ff;
+    --cyan2:#8ff1ff;
+    --green:#7df2b4;
+    --amber:#ffd17e;
+    --red:#ff8585;
+    --violet:#b6a6ff;
+    --warn:#ffb067;
+    --gold:#ffe090;
+    --shadow:0 18px 48px rgba(0,0,0,.4);
+    --shadow-sm:0 6px 18px rgba(0,0,0,.3);
+    --r:20px;
+    --r-sm:12px;
+    --r-xs:8px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0}
+  body{
+    color:var(--text);
+    font-family:Manrope,system-ui,sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(116,230,255,.09), transparent 30%),
+      radial-gradient(circle at 85% 15%, rgba(182,166,255,.09), transparent 28%),
+      radial-gradient(circle at 75% 85%, rgba(125,242,180,.07), transparent 28%),
+      linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 55%, var(--bg0) 100%);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .ambient{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0}
+  .wave{
+    position:absolute; left:-12%; width:124%; height:240px; border-radius:45%;
+    background:linear-gradient(180deg, rgba(116,230,255,.08), rgba(255,255,255,0));
+    filter:blur(16px);
+    animation:drift 22s ease-in-out infinite;
+  }
+  .wave.w1{bottom:6%; opacity:.55; animation-duration:24s}
+  .wave.w2{bottom:0; opacity:.4; transform:scaleX(1.1); animation-duration:30s}
+  .wave.w3{bottom:-4%; opacity:.3; animation-duration:36s}
+  @keyframes drift{
+    0%,100%{transform:translateX(-3%) rotate(-0.3deg)}
+    50%{transform:translateX(3%) rotate(0.3deg)}
+  }
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:1; opacity:.045;
+    background-image:
+      radial-gradient(rgba(255,255,255,.7) 1px, transparent 1px),
+      radial-gradient(rgba(255,255,255,.5) 1px, transparent 1px);
+    background-size:3px 3px, 7px 7px;
+    background-position:0 0, 1px 2px;
+    mix-blend-mode:overlay;
+  }
+
+  .app{
+    position:relative; z-index:2;
+    max-width:1320px; margin:0 auto;
+    padding:20px 26px 40px;
+    min-height:100vh;
+    display:flex; flex-direction:column; gap:18px;
+  }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 18px;
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:16px; backdrop-filter:blur(8px);
+  }
+  .brand{display:flex; align-items:center; gap:14px}
+  .brand-mark{
+    width:36px; height:36px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, var(--cyan2), #2a7fa0 70%, #0a2030);
+    box-shadow:0 0 24px rgba(116,230,255,.35), inset 0 0 10px rgba(255,255,255,.15);
+    position:relative;
+  }
+  .brand-mark::after{
+    content:""; position:absolute; inset:6px; border-radius:50%;
+    background:radial-gradient(circle at 40% 40%, rgba(255,255,255,.3), transparent 45%);
+  }
+  .brand-title{
+    font-family:Fraunces,serif; font-weight:500; font-size:20px; letter-spacing:.02em;
+    font-style:italic;
+  }
+  .brand-sub{font-size:11px; color:var(--mute); letter-spacing:.24em; text-transform:uppercase; margin-top:-2px}
+  .tools{display:flex; gap:8px}
+  .ghost{
+    background:transparent; color:var(--dim);
+    border:1px solid var(--line); padding:7px 13px; border-radius:999px;
+    font:inherit; font-size:12px; cursor:pointer; letter-spacing:.03em;
+    transition:border-color .18s, color .18s, background .18s;
+  }
+  .ghost:hover{color:var(--text); border-color:var(--cyan); background:rgba(116,230,255,.06)}
+  .ghost:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+
+  #stage{min-height:70vh}
+  .screen{
+    padding:4px 0 12px;
+    animation:fadeIn .55s ease both;
+  }
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+
+  .panel{
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--r); padding:28px; box-shadow:var(--shadow);
+    backdrop-filter:blur(10px);
+  }
+  .panel.soft{background:var(--panel2)}
+  .panel.flat{background:var(--panel3); box-shadow:none}
+
+  /* Hero */
+  .hero{
+    display:grid; grid-template-columns:1.35fr 1fr; gap:22px; align-items:stretch;
+  }
+  @media(max-width:940px){ .hero{grid-template-columns:1fr} }
+  .kicker{
+    font-size:11px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--cyan); font-weight:600;
+  }
+  .display-title{
+    font-family:Fraunces,serif; font-weight:500; font-style:italic;
+    font-size:clamp(44px,7vw,74px); line-height:.98;
+    letter-spacing:-0.01em; margin:14px 0 6px;
+    background:linear-gradient(180deg, #f4fbff 20%, #a9d8ec 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .display-title em{font-style:normal; color:var(--cyan); -webkit-text-fill-color:var(--cyan)}
+  .lead{
+    color:var(--dim); font-size:16px; line-height:1.55; max-width:58ch; margin:12px 0 16px;
+  }
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 20px}
+  .chip{
+    font-size:11.5px; padding:5px 11px; border-radius:999px;
+    border:1px solid var(--line2); color:var(--dim);
+    background:rgba(255,255,255,.03); letter-spacing:.02em;
+  }
+  .chip.accent{color:var(--cyan); border-color:rgba(116,230,255,.4); background:rgba(116,230,255,.06)}
+
+  .narration{
+    font-family:Fraunces,serif; font-style:italic; font-weight:400;
+    font-size:15.5px; line-height:1.55; color:var(--dim);
+    padding:16px 18px; border-left:2px solid var(--cyan);
+    background:rgba(116,230,255,.04); border-radius:0 12px 12px 0; margin:10px 0 22px;
+  }
+
+  .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:6px}
+  .primary{
+    background:linear-gradient(180deg, var(--cyan) 0%, #3fb9da 100%);
+    color:#03202c; border:none; padding:13px 22px; border-radius:999px;
+    font:inherit; font-weight:600; font-size:14px; letter-spacing:.03em;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(116,230,255,.22), inset 0 0 0 1px rgba(255,255,255,.2);
+    transition:transform .12s, box-shadow .18s;
+  }
+  .primary:hover{transform:translateY(-1px); box-shadow:0 12px 30px rgba(116,230,255,.3)}
+  .primary:disabled{opacity:.5; cursor:not-allowed; transform:none}
+  .secondary{
+    background:transparent; color:var(--text);
+    border:1px solid var(--line2); padding:12px 20px; border-radius:999px;
+    font:inherit; font-weight:500; font-size:14px; cursor:pointer;
+    transition:border-color .18s, background .18s;
+  }
+  .secondary:hover{border-color:var(--cyan); background:rgba(116,230,255,.05)}
+
+  /* Side stats */
+  .stat-stack{display:flex; flex-direction:column; gap:10px}
+  .stat{
+    padding:14px 16px; border-radius:14px; border:1px solid var(--line);
+    background:rgba(255,255,255,.02);
+  }
+  .stat .label{font-size:11px; color:var(--mute); text-transform:uppercase; letter-spacing:.22em}
+  .stat .value{font-family:Fraunces,serif; font-style:italic; font-size:20px; margin-top:4px}
+  .stat .value.mono{font-family:'JetBrains Mono',monospace; font-style:normal; font-weight:500; font-size:17px}
+
+  /* Setup */
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media(max-width:720px){.grid-2{grid-template-columns:1fr}}
+  .field{display:flex; flex-direction:column; gap:6px; margin-bottom:10px}
+  .field label{font-size:12px; color:var(--mute); text-transform:uppercase; letter-spacing:.18em}
+  .field input, .field select{
+    background:rgba(255,255,255,.03); border:1px solid var(--line2);
+    color:var(--text); padding:11px 14px; border-radius:10px;
+    font:inherit; font-size:14px;
+  }
+  .field input:focus, .field select:focus{outline:none; border-color:var(--cyan); background:rgba(116,230,255,.04)}
+
+  .country-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px; margin-top:8px}
+  .country-card{
+    padding:14px; border-radius:12px; border:1px solid var(--line);
+    background:rgba(255,255,255,.02); cursor:pointer;
+    transition:border-color .18s, transform .1s, background .18s;
+    position:relative;
+  }
+  .country-card:hover{border-color:var(--cyan); background:rgba(116,230,255,.05)}
+  .country-card.selected{border-color:var(--cyan); background:rgba(116,230,255,.08); box-shadow:inset 0 0 0 1px var(--cyan)}
+  .country-card.taken{opacity:.38; pointer-events:none}
+  .country-card .flag-row{display:flex; align-items:center; gap:10px}
+  .country-card .cc{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--mute);
+    padding:2px 7px; border:1px solid var(--line2); border-radius:6px;
+  }
+  .country-card h4{font-family:Fraunces,serif; font-weight:500; font-style:italic; margin:8px 0 2px; font-size:18px}
+  .country-card p{font-size:12px; color:var(--mute); margin:0; line-height:1.4}
+  .country-card .owner-tag{
+    position:absolute; top:10px; right:10px;
+    font-size:10px; padding:3px 8px; border-radius:999px;
+    background:var(--cyan); color:#03202c; font-weight:600; letter-spacing:.05em;
+  }
+
+  /* Map */
+  .map-wrap{
+    position:relative; border-radius:var(--r); overflow:hidden;
+    background:radial-gradient(ellipse at center, rgba(18,59,86,.8), rgba(7,24,39,.9));
+    border:1px solid var(--line); aspect-ratio: 4/3; min-height:360px;
+  }
+  .map-svg{width:100%; height:100%; display:block}
+  .map-svg .country{
+    fill:rgba(116,230,255,.08); stroke:rgba(116,230,255,.28); stroke-width:.5;
+    transition:fill .28s;
+  }
+  .map-svg .country.active{fill:rgba(116,230,255,.22); stroke:var(--cyan)}
+  .map-svg .country.downstream{fill:rgba(255,209,126,.18); stroke:var(--amber)}
+  .map-svg .country.epicenter{fill:rgba(255,133,133,.22); stroke:var(--red)}
+  .map-svg .country-label{
+    font-family:'JetBrains Mono',monospace; font-size:9px; fill:var(--dim);
+    pointer-events:none; letter-spacing:.1em;
+  }
+  .map-svg .station{
+    fill:var(--cyan); filter:drop-shadow(0 0 6px rgba(116,230,255,.5));
+    cursor:default;
+  }
+  .map-svg .station.epicenter{fill:var(--red); filter:drop-shadow(0 0 10px rgba(255,133,133,.7))}
+  .map-svg .station.downstream{fill:var(--amber); filter:drop-shadow(0 0 8px rgba(255,209,126,.6))}
+  .map-svg .station-label{
+    font-family:Manrope,sans-serif; font-weight:600; font-size:10px; fill:var(--text);
+    pointer-events:none;
+  }
+  .map-svg .connection{
+    stroke:rgba(116,230,255,.2); stroke-width:.7; stroke-dasharray:2 3; fill:none;
+  }
+  .map-svg .pulse{
+    fill:none; stroke:var(--red); stroke-width:1.2; opacity:0;
+    animation:pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{opacity:.9; r:3}
+    100%{opacity:0; r:28}
+  }
+  .map-overlay{
+    position:absolute; left:14px; bottom:14px;
+    padding:8px 12px; background:rgba(4,16,28,.7); border:1px solid var(--line);
+    border-radius:8px; font-size:11px; color:var(--dim);
+    font-family:'JetBrains Mono',monospace; letter-spacing:.1em;
+  }
+
+  /* Round screen */
+  .round-grid{display:grid; grid-template-columns:1.25fr 1fr; gap:18px; align-items:start}
+  @media(max-width:980px){.round-grid{grid-template-columns:1fr}}
+
+  .roll-stage{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:16px; padding:30px 24px;
+  }
+  .die{
+    width:120px; height:120px;
+    background:
+      linear-gradient(135deg, rgba(116,230,255,.35) 0%, rgba(116,230,255,.08) 50%, rgba(6,36,58,.8) 100%);
+    border-radius:22px; border:1px solid rgba(116,230,255,.4);
+    display:flex; align-items:center; justify-content:center;
+    font-family:Fraunces,serif; font-style:italic; font-size:15px; color:var(--text);
+    box-shadow:0 0 30px rgba(116,230,255,.25), inset 0 0 20px rgba(255,255,255,.08);
+    text-align:center; padding:10px; line-height:1.15;
+    transform-style:preserve-3d;
+  }
+  .die.rolling{animation:dieSpin 1.8s cubic-bezier(.22,.72,.2,1)}
+  @keyframes dieSpin{
+    0%{transform:rotateX(0) rotateY(0) scale(.95)}
+    50%{transform:rotateX(540deg) rotateY(360deg) scale(1.05)}
+    100%{transform:rotateX(1080deg) rotateY(720deg) scale(1)}
+  }
+  .roll-label{
+    font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:26px;
+    margin-top:6px; text-align:center;
+  }
+  .roll-desc{color:var(--dim); font-size:14px; text-align:center; max-width:46ch}
+
+  .round-head{
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;
+    flex-wrap:wrap; gap:12px;
+  }
+  .round-index{
+    font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:30px;
+  }
+  .round-index .n{color:var(--cyan)}
+  .round-meta{display:flex; gap:8px; flex-wrap:wrap}
+  .tag{
+    font-size:11px; padding:5px 10px; border-radius:6px;
+    font-family:'JetBrains Mono',monospace; letter-spacing:.06em;
+    border:1px solid var(--line2); color:var(--dim);
+  }
+  .tag.cyan{color:var(--cyan); border-color:rgba(116,230,255,.35); background:rgba(116,230,255,.06)}
+  .tag.amber{color:var(--amber); border-color:rgba(255,209,126,.35); background:rgba(255,209,126,.06)}
+  .tag.red{color:var(--red); border-color:rgba(255,133,133,.35); background:rgba(255,133,133,.06)}
+
+  /* Broadcast */
+  .broadcast{
+    padding:18px 20px; border-radius:14px;
+    border:1px solid rgba(255,209,126,.3); background:rgba(255,209,126,.04);
+    margin-top:14px;
+  }
+  .broadcast .bc-head{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em;
+    color:var(--amber); text-transform:uppercase; margin-bottom:8px;
+  }
+  .broadcast .bc-body{font-size:15px; line-height:1.55}
+
+  /* Team bar */
+  .teambar{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:12px;
+    margin-top:14px;
+  }
+  .team-card{
+    padding:14px 16px; border-radius:14px; border:1px solid var(--line);
+    background:rgba(255,255,255,.03);
+    display:flex; flex-direction:column; gap:8px;
+    position:relative; overflow:hidden;
+  }
+  .team-card.ready{border-color:var(--green); background:rgba(125,242,180,.06)}
+  .team-card.done{border-color:var(--cyan); background:rgba(116,230,255,.06)}
+  .team-card h4{margin:0; font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:17px}
+  .team-card .meta{display:flex; justify-content:space-between; align-items:center; gap:8px}
+  .team-card .country{font-size:12px; color:var(--mute); font-family:'JetBrains Mono',monospace; letter-spacing:.08em}
+  .team-card .score-tag{
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600;
+    color:var(--cyan);
+  }
+  .team-card .resources{display:flex; gap:10px; font-size:11px; color:var(--dim); font-family:'JetBrains Mono',monospace}
+  .team-card .resources span strong{color:var(--text); font-weight:600}
+  .team-card .state{
+    font-size:11px; color:var(--mute); letter-spacing:.14em; text-transform:uppercase;
+  }
+  .team-card button{margin-top:4px}
+
+  /* Modal */
+  .modal-bg{
+    position:fixed; inset:0; background:rgba(2,10,18,.76); backdrop-filter:blur(8px);
+    display:none; align-items:center; justify-content:center; z-index:100; padding:16px;
+  }
+  .modal-bg.open{display:flex; animation:fadeIn .2s ease}
+  .modal{
+    max-width:780px; width:100%; max-height:92vh; overflow-y:auto;
+    background:var(--bg1); border:1px solid var(--line2); border-radius:var(--r);
+    padding:26px 28px; box-shadow:0 30px 80px rgba(0,0,0,.6);
+  }
+  .modal h3{font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:26px; margin:0 0 6px}
+  .modal .sub{color:var(--dim); font-size:13px; margin-bottom:16px}
+
+  /* Console */
+  .console-top{display:flex; justify-content:space-between; align-items:start; gap:16px; flex-wrap:wrap}
+  .console-identity{display:flex; flex-direction:column; gap:4px}
+  .console-identity .team-id{
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--cyan); letter-spacing:.14em;
+  }
+  .console-identity h3{margin:0}
+  .resource-bar{
+    display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  }
+  .res-pill{
+    padding:6px 10px; border-radius:8px; font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:.08em;
+    border:1px solid var(--line2); display:flex; align-items:center; gap:6px;
+  }
+  .res-pill .dot{width:7px; height:7px; border-radius:50%; background:var(--cyan)}
+  .res-pill.tokens .dot{background:var(--violet)}
+
+  .readings-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:8px;
+    margin:12px 0;
+  }
+  .reading{
+    padding:10px 12px; border-radius:10px; border:1px solid var(--line);
+    background:rgba(255,255,255,.025);
+    display:flex; flex-direction:column; gap:2px;
+    position:relative;
+  }
+  .reading .p-name{font-size:10px; color:var(--mute); letter-spacing:.12em; text-transform:uppercase}
+  .reading .p-val{
+    font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:600; color:var(--text);
+  }
+  .reading .p-range{font-size:10px; color:var(--mute); font-family:'JetBrains Mono',monospace}
+  .reading.warn{border-color:rgba(255,209,126,.5); background:rgba(255,209,126,.05)}
+  .reading.warn .p-val{color:var(--amber)}
+  .reading.crit{border-color:rgba(255,133,133,.55); background:rgba(255,133,133,.05)}
+  .reading.crit .p-val{color:var(--red)}
+  .reading.hidden{border-style:dashed; border-color:var(--mute)}
+  .reading.hidden .p-val{color:var(--mute); letter-spacing:.1em}
+  .reading .reveal-btn{
+    position:absolute; top:6px; right:6px;
+    background:transparent; color:var(--violet); border:1px solid rgba(182,166,255,.5);
+    border-radius:6px; padding:2px 7px; font:inherit; font-size:10px; cursor:pointer;
+    letter-spacing:.08em;
+  }
+  .reading .reveal-btn:hover{background:rgba(182,166,255,.1)}
+
+  .observations{
+    padding:10px 12px; background:rgba(255,255,255,.025);
+    border:1px solid var(--line); border-radius:10px;
+    font-size:13px; line-height:1.55; color:var(--dim); margin:10px 0;
+  }
+  .observations strong{color:var(--text)}
+  .observations ul{margin:4px 0 0; padding-left:18px}
+  .observations li{margin:2px 0}
+
+  /* Questions */
+  .q{margin:14px 0}
+  .q-head{
+    display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:6px;
+  }
+  .q-head .qtext{font-size:14px; font-weight:600}
+  .q-head .qpts{
+    font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--mute);
+    letter-spacing:.1em; white-space:nowrap;
+  }
+  .opts{display:flex; flex-direction:column; gap:6px}
+  .opt{
+    display:flex; align-items:center; gap:10px; cursor:pointer;
+    padding:9px 12px; border-radius:10px;
+    border:1px solid var(--line); background:rgba(255,255,255,.02);
+    transition:border-color .15s, background .15s;
+    font-size:13.5px;
+  }
+  .opt:hover{border-color:var(--cyan); background:rgba(116,230,255,.04)}
+  .opt.selected{border-color:var(--cyan); background:rgba(116,230,255,.1)}
+  .opt input{accent-color:var(--cyan); flex:0 0 auto}
+  .opt.correct{border-color:var(--green); background:rgba(125,242,180,.09)}
+  .opt.wrong{border-color:var(--red); background:rgba(255,133,133,.07); opacity:.8}
+  .opt .mini-badge{
+    font-family:'JetBrains Mono',monospace; font-size:10px; margin-left:auto;
+    letter-spacing:.1em; padding:2px 6px; border-radius:4px;
+  }
+  .opt.correct .mini-badge{background:rgba(125,242,180,.15); color:var(--green)}
+  .opt.wrong .mini-badge{background:rgba(255,133,133,.12); color:var(--red)}
+
+  /* Exchange */
+  .exchange{
+    padding:14px; border-radius:12px; border:1px dashed rgba(182,166,255,.4);
+    background:rgba(182,166,255,.04); margin:16px 0;
+  }
+  .exchange h4{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--violet); margin:0 0 8px;
+  }
+  .exchange .xrow{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  .exchange select{
+    background:rgba(255,255,255,.04); border:1px solid var(--line2);
+    color:var(--text); padding:7px 10px; border-radius:8px; font:inherit; font-size:13px;
+  }
+  .exchange button{
+    background:transparent; color:var(--violet);
+    border:1px solid rgba(182,166,255,.5);
+    border-radius:8px; padding:7px 12px; font:inherit; font-size:12.5px; cursor:pointer;
+    letter-spacing:.03em;
+  }
+  .exchange button:hover{background:rgba(182,166,255,.1)}
+  .exchange button:disabled{opacity:.4; cursor:not-allowed}
+  .exchange-log{
+    margin-top:10px; font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    color:var(--dim); line-height:1.55;
+  }
+  .exchange-log div{padding:4px 0; border-bottom:1px dashed var(--line)}
+  .exchange-log div:last-child{border-bottom:0}
+
+  /* Resolution */
+  .resolution-head{
+    display:flex; justify-content:space-between; align-items:start; gap:20px; flex-wrap:wrap; margin-bottom:16px;
+  }
+  .true-type{
+    font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:30px;
+  }
+  .true-type small{
+    display:block; font-size:12px; letter-spacing:.2em; color:var(--cyan);
+    font-family:'JetBrains Mono',monospace; font-style:normal; margin-bottom:6px;
+  }
+  .result-teams{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; margin-top:6px}
+  .result-team{
+    padding:14px; border-radius:12px; border:1px solid var(--line);
+    background:rgba(255,255,255,.025);
+  }
+  .result-team h4{margin:0 0 6px; font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:18px}
+  .result-team .score-block{
+    display:flex; align-items:baseline; gap:8px; margin-bottom:8px;
+  }
+  .result-team .big-score{
+    font-family:'JetBrains Mono',monospace; font-size:28px; font-weight:600; color:var(--cyan);
+  }
+  .result-team .max-score{color:var(--mute); font-size:13px}
+  .breakdown{font-size:12px; color:var(--dim); line-height:1.6}
+  .breakdown .bd-row{display:flex; justify-content:space-between; gap:8px}
+  .breakdown .bd-row span:last-child{font-family:'JetBrains Mono',monospace; color:var(--text)}
+
+  /* Final */
+  .podium{
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:20px 0;
+    align-items:end;
+  }
+  @media(max-width:620px){.podium{grid-template-columns:1fr}}
+  .pod{
+    padding:20px; border-radius:14px; text-align:center;
+    border:1px solid var(--line2); background:var(--panel2);
+  }
+  .pod.first{border-color:var(--gold); background:rgba(255,224,144,.08); padding-bottom:44px}
+  .pod.second{border-color:rgba(255,255,255,.3); background:rgba(255,255,255,.04)}
+  .pod.third{border-color:rgba(255,176,103,.4); background:rgba(255,176,103,.04)}
+  .pod .rank{
+    font-family:Fraunces,serif; font-style:italic; font-size:52px; color:var(--text);
+    line-height:1; margin-bottom:8px;
+  }
+  .pod.first .rank{color:var(--gold)}
+  .pod .name{font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:20px; margin-bottom:4px}
+  .pod .final-score{
+    font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:600; color:var(--cyan); margin-top:8px;
+  }
+  .pod .country-tag{font-size:11px; color:var(--mute); font-family:'JetBrains Mono',monospace; letter-spacing:.1em}
+
+  /* Utility */
+  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  .end{margin-left:auto}
+  hr.div{border:0; border-top:1px solid var(--line); margin:18px 0}
+  .note{font-size:12px; color:var(--mute); line-height:1.55}
+  .note.accent{color:var(--cyan)}
+
+  .footer-note{
+    text-align:center; font-size:11px; color:var(--mute); letter-spacing:.14em; text-transform:uppercase;
+    margin-top:14px;
+  }
+  .footer-note.ital{
+    font-family:Fraunces,serif; font-style:italic; font-size:13px; color:var(--dim);
+    text-transform:none; letter-spacing:0;
+  }
+
+  /* How to play */
+  .htp-list{counter-reset:htp; padding:0; margin:0; list-style:none}
+  .htp-list li{counter-increment:htp; position:relative; padding:10px 0 10px 42px; border-bottom:1px dashed var(--line)}
+  .htp-list li:last-child{border-bottom:0}
+  .htp-list li::before{
+    content:counter(htp,decimal-leading-zero);
+    position:absolute; left:0; top:10px;
+    font-family:'JetBrains Mono',monospace; font-size:13px;
+    color:var(--cyan); letter-spacing:.05em;
+  }
+  .htp-list li strong{display:block; font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:16px; margin-bottom:3px}
+  .htp-list li p{margin:0; color:var(--dim); font-size:13px; line-height:1.55}
+
+  /* Small screen tuning */
+  @media(max-width:520px){
+    .app{padding:14px 14px 30px}
+    .display-title{font-size:40px}
+    .panel{padding:18px}
+    .modal{padding:18px}
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    *, *::before, *::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient">
+  <div class="wave w1"></div>
+  <div class="wave w2"></div>
+  <div class="wave w3"></div>
+</div>
+<div class="grain"></div>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-title">Confluence</div>
+        <div class="brand-sub">Guardians of our Waters</div>
+      </div>
+    </div>
+    <div class="tools">
+      <button class="ghost" id="audioToggle">Audio: On</button>
+      <button class="ghost" id="howToBtn">How to Play</button>
+      <button class="ghost" id="resetBtn">Reset</button>
+    </div>
+  </header>
+
+  <main id="stage"></main>
+
+  <div class="footer-note">Objective scoring · No teacher judging · No voting · No style points</div>
+  <div class="footer-note ital" id="footerFlavor">The watershed continues to remember everything.</div>
+</div>
+
+<div id="modalBg" class="modal-bg" role="dialog" aria-modal="true" aria-hidden="true">
+  <div id="modal" class="modal"></div>
+</div>
+
+<script>
+// =========================================================
+// STATIONS (partner countries)
+// =========================================================
+const STATIONS = [
+  { code:'IT', name:'Italy',    station:'Tiber–Adriatic Station', x:480, y:300, adj:['FR','GR','SK'] },
+  { code:'ES', name:'Spain',    station:'Ebro Basin Station',     x:200, y:330, adj:['FR'] },
+  { code:'GR', name:'Greece',   station:'Pindus–Aegean Station',  x:580, y:400, adj:['IT','BG'] },
+  { code:'FR', name:'France',   station:'Rhône–Loire Station',    x:330, y:230, adj:['IT','ES','SK'] },
+  { code:'SK', name:'Slovakia', station:'Danube–Tatra Station',   x:500, y:170, adj:['FR','BG','IT'] },
+  { code:'BG', name:'Bulgaria', station:'Danube–Black Sea Station', x:640, y:230, adj:['GR','SK'] }
+];
+const STATION_BY_CODE = Object.fromEntries(STATIONS.map(s=>[s.code,s]));
+
+// =========================================================
+// PARAMETERS and THRESHOLDS (what students read against)
+// =========================================================
+const PARAMS = [
+  { id:'turbidity', name:'Turbidity',   unit:'NTU',       safeMax:5,    warnMax:20,  decimals:1 },
+  { id:'nitrate',   name:'Nitrates',    unit:'mg/L',      safeMax:10,   warnMax:25,  decimals:1 },
+  { id:'phosphate', name:'Phosphates',  unit:'mg/L',      safeMax:0.10, warnMax:0.30,decimals:2 },
+  { id:'do',        name:'Dissolved O₂',unit:'mg/L',      safeMin:6,    warnMin:4,   decimals:1 },
+  { id:'ph',        name:'pH',          unit:'',          safeMin:6.5,  safeMax:8.5, decimals:1 },
+  { id:'cond',      name:'Conductivity',unit:'µS/cm',     safeMax:800,  warnMax:1500,decimals:0 },
+  { id:'temp',      name:'Temperature', unit:'°C',        safeMax:24,   warnMax:28,  decimals:1 },
+  { id:'ecoli',     name:'E. coli',     unit:'CFU/100mL', safeMax:500,  warnMax:1000,decimals:0 },
+  { id:'plastic',   name:'Microplastic',unit:'part/L',    safeMax:1,    warnMax:5,   decimals:1 }
+];
+const PARAM_BY_ID = Object.fromEntries(PARAMS.map(p=>[p.id,p]));
+
+// Baseline ranges for "boring" normal readings
+const BASELINE = {
+  turbidity:[1.2, 4.2],
+  nitrate:[2.0, 8.5],
+  phosphate:[0.02, 0.08],
+  do:[6.8, 9.2],
+  ph:[7.0, 8.2],
+  cond:[180, 620],
+  temp:[14, 21],
+  ecoli:[10, 280],
+  plastic:[0.1, 0.9]
+};
+
+// =========================================================
+// PRESSURE SIGNATURES (what defines each pressure type)
+// =========================================================
+// Each pressure has ranges for affected parameters at "strong" and "weak" intensity.
+// "Strong" = epicenter. "Weak" = downstream propagation.
+const PRESSURES = [
+  {
+    id:'eutrophication',
+    name:'Eutrophication',
+    blurb:'Nutrient enrichment driving algal growth, oxygen stress, and pH swings.',
+    signature:{
+      strong:{ phosphate:[0.32,0.75], nitrate:[12,24], do:[3.2,5.2], ph:[8.5,9.2] },
+      weak:  { phosphate:[0.14,0.28], nitrate:[9.5,14], do:[5.4,6.4], ph:[8.3,8.7] }
+    },
+    exceedances:['phosphate','nitrate','do','ph'],
+    weakExceedances:['phosphate','nitrate'],
+    intervention:'Reduce nutrient inputs, document the bloom, alert environmental authority',
+    advisory:'Bloom activity observed. Avoid contact in affected area. Testing continues.',
+    wrongInterv:[
+      'Declare the water immediately safe and resume activities',
+      'Ignore the bloom and retest in six months',
+      'Request emergency evacuation of the local population'
+    ],
+    wrongAdv:[
+      'Water is dangerous forever. Avoid all lakes permanently.',
+      'The bloom is decorative. Normal use should continue.',
+      'We have no information, so no statement will be issued.'
+    ],
+    flavor:'The lake has entered its algae era. No one benefits.'
+  },
+  {
+    id:'sediment',
+    name:'Sediment Runoff',
+    blurb:'Rainfall-driven sediment and soil entering the water system.',
+    signature:{
+      strong:{ turbidity:[22,48], nitrate:[9.5,16] },
+      weak:  { turbidity:[7,14] }
+    },
+    exceedances:['turbidity','nitrate'],
+    weakExceedances:['turbidity'],
+    intervention:'Investigate runoff pathways and storm-drain inputs, retest downstream',
+    advisory:'Cloudier water observed after rainfall. Avoid direct contact until follow-up testing.',
+    wrongInterv:[
+      'Paint the bins a different color and conclude the matter',
+      'Publish a message that the water is perfectly safe',
+      'Replace local signage before collecting any data'
+    ],
+    wrongAdv:[
+      'The river has been cancelled. Do not approach.',
+      'Visual change is not meaningful. No precautions needed.',
+      'Advisories are premature. Testing will continue privately.'
+    ],
+    flavor:'The water is providing feedback. It is not subtle.'
+  },
+  {
+    id:'microbial',
+    name:'Microbial Contamination',
+    blurb:'Bacterial load rising without obvious visual cues.',
+    signature:{
+      strong:{ ecoli:[1800,4200], turbidity:[5.5,9] },
+      weak:  { ecoli:[650,1200] }
+    },
+    exceedances:['ecoli'],
+    weakExceedances:['ecoli'],
+    intervention:'Issue a temporary no-contact advisory and prioritize microbial testing',
+    advisory:'Recent overflow may affect water safety. Avoid contact until testing confirms conditions.',
+    wrongInterv:[
+      'Declare the water safe because it looks clear',
+      'Focus only on fish counts',
+      'Wait 72 hours and reassess without any advisory'
+    ],
+    wrongAdv:[
+      'The river looks fine, so normal use should continue.',
+      'The river is dangerous forever.',
+      'We have no evidence, therefore we should say nothing.'
+    ],
+    flavor:'Visual clarity continues to overestimate its expertise.'
+  },
+  {
+    id:'saline',
+    name:'Saline Intrusion',
+    blurb:'Salt water entering freshwater systems, often via over-extraction or drought.',
+    signature:{
+      strong:{ cond:[2400,3600] },
+      weak:  { cond:[1050,1500] }
+    },
+    exceedances:['cond'],
+    weakExceedances:['cond'],
+    intervention:'Coordinate cross-border monitoring and reduce groundwater extraction pressure',
+    advisory:'Salinity above reference levels detected. Drinking water sources under review.',
+    wrongInterv:[
+      'Add more fresh water to the delivery system from an unknown source',
+      'Declare the water naturally mineral-rich and bottle it',
+      'Wait until summer and retest casually'
+    ],
+    wrongAdv:[
+      'The water tastes unusual. This is part of local character.',
+      'Seawater is healthy. Encourage increased consumption.',
+      'No information should leave this building until elections.'
+    ],
+    flavor:'The aquifer has concerns. It has been saving them up.'
+  },
+  {
+    id:'thermal',
+    name:'Thermal Pollution',
+    blurb:'Industrial or seasonal heat loading, with oxygen consequences.',
+    signature:{
+      strong:{ temp:[27,31], do:[4.0,5.4] },
+      weak:  { temp:[23.5,26], do:[5.2,6.0] }
+    },
+    exceedances:['temp','do'],
+    weakExceedances:['temp'],
+    intervention:'Engage with the industrial operator and regional authority; require discharge review',
+    advisory:'Elevated thermal discharge under review with national environmental authority.',
+    wrongInterv:[
+      'Open more pipes to increase warm outflow and diversify the river',
+      'Cover the river to keep it warm overnight',
+      'Issue compliments to the operator for consistent performance'
+    ],
+    wrongAdv:[
+      'The river is now a hot spring. Tourism opportunities follow.',
+      'Temperature is a personal opinion. No action required.',
+      'Declare the river extinct as a precaution.'
+    ],
+    flavor:'The river is running a fever. The paperwork has finally arrived.'
+  },
+  {
+    id:'acidification',
+    name:'Acidification Event',
+    blurb:'Sudden pH drop from industrial emissions, acid rain, or chemical drainage.',
+    signature:{
+      strong:{ ph:[4.4,5.6] },
+      weak:  { ph:[5.7,6.3] }
+    },
+    exceedances:['ph'],
+    weakExceedances:['ph'],
+    intervention:'Identify the acid source and engage regional environmental authority',
+    advisory:'Abnormal pH values detected. Cause under investigation with local authorities.',
+    wrongInterv:[
+      'Pour alkaline substances directly into the river immediately',
+      'Close the subject without notifying anyone',
+      'Blame the season and wait it out'
+    ],
+    wrongAdv:[
+      'The river is experimenting. Please respect its choices.',
+      'Acidity is subjective. No public statement needed.',
+      'Declare the water holy and unregulated.'
+    ],
+    flavor:'The pH has fallen out of the acceptable mood.'
+  },
+  {
+    id:'microplastic',
+    name:'Microplastic Concentration',
+    blurb:'Particle load spiking from stormwater, debris accumulation, and fragmentation.',
+    signature:{
+      strong:{ plastic:[12,22], turbidity:[6,12] },
+      weak:  { plastic:[3,6] }
+    },
+    exceedances:['plastic'],
+    weakExceedances:['plastic'],
+    intervention:'Targeted cleanup at drain mouths, document waste types, involve municipal services',
+    advisory:'Debris accumulation observed. Cleanup coordinated. Swimming not recommended in affected area.',
+    wrongInterv:[
+      'Paint the debris in recognizable colors and leave it',
+      'Announce that plastic is part of the natural environment',
+      'Ignore the event and focus only on fish counts'
+    ],
+    wrongAdv:[
+      'Plastic is a cultural element. No public action required.',
+      'Declare full ecosystem collapse and evacuate the region.',
+      'No comment at this time; next quarter perhaps.'
+    ],
+    flavor:'Efficient, accurate, and only mildly disappointed in humanity.'
+  },
+  {
+    id:'industrial',
+    name:'Industrial Anomaly',
+    blurb:'Irregular chemistry suggesting a point-source discharge or spill.',
+    signature:{
+      strong:{ cond:[1400,2200], ph:[4.8,9.6], do:[3.5,5.4] },
+      weak:  { cond:[900,1200] }
+    },
+    exceedances:['cond','ph','do'],
+    weakExceedances:['cond'],
+    intervention:'Request immediate inspection by the environmental inspectorate and alert downstream stations',
+    advisory:'Irregular water chemistry detected. Source investigation underway. Use caution.',
+    wrongInterv:[
+      'Ignore the anomaly as likely a sensor error without checking',
+      'Publish a full rebranding campaign for the river',
+      'Disconnect the sensors permanently'
+    ],
+    wrongAdv:[
+      'Industry is a friend of the river. All is normal.',
+      'Sensor drift suspected. Public information unnecessary.',
+      'Rename the river to avoid future confusion.'
+    ],
+    flavor:'The chemistry has delivered fresh opinions. None of them are calm.'
+  }
+];
+const PRESSURE_BY_ID = Object.fromEntries(PRESSURES.map(p=>[p.id,p]));
+
+// =========================================================
+// ROUND CONTEXTS (River Roll)
+// =========================================================
+const ROUND_CONTEXTS = [
+  { id:'field',      name:'Field Test',       blurb:'One station has a parameter offline. A Verification Token reveals it.', modifier:'hide-one' },
+  { id:'pollution',  name:'Pollution Alert',  blurb:'A clear single-source event. Classification matters most.',             modifier:'none' },
+  { id:'rapid',      name:'Rapid Response',   blurb:'Limited time. The intervention question is the swing point.',           modifier:'none' },
+  { id:'community',  name:'Community Message',blurb:'The public advisory must be proportionate. Not alarmist. Not dismissive.', modifier:'none' },
+  { id:'crossborder',name:'Cross-Border Link',blurb:'Epicenter in one country, symptoms in another. Trade intelligence.',     modifier:'force-link' },
+  { id:'policy',     name:'Policy Window',    blurb:'The correct intervention depends on institutional scope.',               modifier:'none' }
+];
+
+// =========================================================
+// GENERIC OBSERVATIONS (flavor for evidence cards)
+// =========================================================
+const CONTEXT_LIBRARY = {
+  eutrophication:[
+    'Warm, still conditions for the past several days.',
+    'A greenish film was reported near a sheltered cove.',
+    'Fish observed near the surface at dawn.'
+  ],
+  sediment:[
+    'Heavy rainfall 12–24 hours earlier.',
+    'Small litter clusters near storm drains.',
+    'Flow is faster than the weekly average.'
+  ],
+  microbial:[
+    'Combined-sewer overflow notice issued recently.',
+    'Public bathing area remains open by default.',
+    'The water looks entirely normal to the eye.'
+  ],
+  saline:[
+    'Extended dry period; local reservoirs low.',
+    'Increased reports of off-taste from drinking water.',
+    'Irrigation pumps operating at above-average rates.'
+  ],
+  thermal:[
+    'Warm industrial outlet active upstream.',
+    'Fish activity unusually high in the morning.',
+    'Seasonal conditions should be milder than observed.'
+  ],
+  acidification:[
+    'Mild chemical odor reported by nearby residents.',
+    'Recent industrial runoff incident in the area.',
+    'Aquatic vegetation showing unusual discoloration.'
+  ],
+  microplastic:[
+    'Visible debris accumulation near drain mouths.',
+    'Recent storm surge redistributed shoreline litter.',
+    'Sampling filter loaded faster than protocol expects.'
+  ],
+  industrial:[
+    'An unregistered discharge was reported last night.',
+    'Unusual sheen observed on the water surface.',
+    'A nearby facility logged a maintenance event.'
+  ]
+};
+
+const FLAVOR = {
+  preRoll:[
+    'The river has submitted fresh evidence.',
+    'Conditions are changing in ways the spreadsheet will need to acknowledge.',
+    'A new file has arrived from the watershed.',
+    'The data is beginning to develop opinions.',
+    'Something upstream has been decided without asking.'
+  ],
+  afterPerfect:[
+    'The evidence was read correctly. The river is briefly optimistic.',
+    'A rare and excellent display of restraint.',
+    'Decisive and accurate. An uncommon combination.',
+    'The dataset has approved of this submission.'
+  ],
+  afterWeak:[
+    'The dataset suggested another conclusion.',
+    'A preventable disagreement with the facts.',
+    'An ambitious theory. The numbers preferred another one.',
+    'Unsupported confidence remains decorative.'
+  ],
+  generic:[
+    'The watershed continues to remember everything.',
+    'Water systems remain connected despite repeated attempts to ignore this.',
+    'Confidence is useful. Accuracy is better.',
+    'The situation is not dramatic. It is simply measurable.'
+  ]
+};
+
+// =========================================================
+// STATE
+// =========================================================
+const state = {
+  screen:'home',
+  teams:[],                 // {name, code (country), score, credits, tokens, roundAnswers, exchangeLog, hiddenParamId}
+  roundIndex:0,
+  totalRounds:6,
+  currentEvent:null,        // generated each round
+  currentContext:null,      // round context (River Roll)
+  audioEnabled:true,
+  audioCtx:null,
+  ambient:null,
+  soundUnlocked:false,
+  activeTeamIdx:null,
+  usedPressureTypes:[]
+};
+
+// =========================================================
+// DOM helpers
+// =========================================================
+const $ = sel => document.querySelector(sel);
+const stage = $('#stage');
+const modalBg = $('#modalBg');
+const modal  = $('#modal');
+
+const rand = (min,max)=> Math.random()*(max-min)+min;
+const randInt = (min,max)=> Math.floor(rand(min,max+0.999));
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+const shuffle = arr => { const a = arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function fmt(n, decimals){
+  if (n === null || n === undefined) return '—';
+  return n.toFixed(decimals);
+}
+
+function setFooter(text){ $('#footerFlavor').textContent = text; }
+
+// =========================================================
+// AUDIO (Web Audio synth — no external files)
+// =========================================================
+function unlockAudio(){
+  if (state.soundUnlocked) return;
+  try {
+    state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    state.soundUnlocked = true;
+  } catch(e){}
+}
+function tone(freq=440, dur=0.12, type='sine', gain=0.025, when=0){
+  if (!state.audioEnabled || !state.soundUnlocked || !state.audioCtx) return;
+  const ctx = state.audioCtx;
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = type; o.frequency.value = freq;
+  o.connect(g); g.connect(ctx.destination);
+  const t0 = ctx.currentTime + when;
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(gain, t0+0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+  o.start(t0); o.stop(t0+dur+0.02);
+}
+function chord(freqs, dur=0.3, type='sine', gain=0.02){
+  freqs.forEach((f,i)=> tone(f, dur, type, gain, i*0.015));
+}
+function playClick(){ tone(580, 0.06, 'triangle', 0.016); }
+function playSelect(){ tone(720, 0.08, 'sine', 0.02); }
+function playCorrect(){ chord([523, 659, 784], 0.35, 'sine', 0.024); }
+function playWrong(){ tone(180, 0.25, 'sawtooth', 0.02); }
+function playTransition(){ chord([392, 523], 0.25, 'sine', 0.018); }
+function playPulse(){
+  tone(110, 0.35, 'sine', 0.03);
+  tone(220, 0.2, 'sine', 0.02, 0.08);
+}
+function playRoll(){
+  for(let i=0;i<5;i++) tone(200 + Math.random()*400, 0.08, 'triangle', 0.012, i*0.1);
+}
+function playReveal(){ chord([440, 554, 659], 0.3, 'triangle', 0.02); }
+function ambientStart(){
+  if (!state.audioEnabled || !state.soundUnlocked || state.ambient) return;
+  state.ambient = setInterval(()=>{
+    if (state.screen === 'home' || state.screen === 'final') return;
+    const notes = [87, 110, 130, 164];
+    tone(pick(notes), 1.4, 'sine', 0.008);
+  }, 3400);
+}
+function ambientStop(){
+  if (state.ambient){ clearInterval(state.ambient); state.ambient = null; }
+}
+
+// =========================================================
+// PROCEDURAL EVENT GENERATOR
+// =========================================================
+function genReadings(pressureId, intensity, roundCtx, paramsVisible){
+  // intensity: 'strong' | 'weak' | 'normal'
+  const readings = {};
+  PARAMS.forEach(p => {
+    const sig = PRESSURES.find(pr => pr.id === pressureId).signature[intensity];
+    if (sig && sig[p.id]){
+      const [lo, hi] = sig[p.id];
+      readings[p.id] = +rand(lo, hi).toFixed(p.decimals);
+    } else {
+      const [lo, hi] = BASELINE[p.id];
+      readings[p.id] = +rand(lo, hi).toFixed(p.decimals);
+    }
+  });
+  return readings;
+}
+
+function generateEvent(roundIdx){
+  // Choose a round context
+  let ctx;
+  if (roundIdx === 0){
+    // Start with Pollution Alert for clarity
+    ctx = ROUND_CONTEXTS.find(c => c.id === 'pollution');
+  } else if (roundIdx === state.totalRounds-1){
+    ctx = ROUND_CONTEXTS.find(c => c.id === 'crossborder');
+  } else {
+    // Random from all contexts, but try not to repeat the immediate last
+    ctx = pick(ROUND_CONTEXTS.filter(c => c.id !== (state.currentContext?.id)));
+  }
+
+  // Choose pressure, avoiding repeats if possible
+  const available = PRESSURES.filter(p => !state.usedPressureTypes.includes(p.id));
+  const pressure = available.length > 0 ? pick(available) : pick(PRESSURES);
+  state.usedPressureTypes.push(pressure.id);
+
+  // Pick epicenter among teams' countries (so at least one team sees strong signal)
+  const teamCodes = state.teams.map(t => t.code);
+  const epicenterCode = pick(teamCodes);
+  const epicenterStation = STATION_BY_CODE[epicenterCode];
+
+  // Downstream: 1-2 linked countries among participating teams
+  const linked = epicenterStation.adj.filter(c => teamCodes.includes(c));
+  const downstreamCount = ctx.modifier === 'force-link' ? Math.max(1, linked.length>0?1:0) : randInt(0, Math.min(1, linked.length));
+  const downstreamCodes = shuffle(linked).slice(0, downstreamCount);
+
+  // Readings per team
+  const readingsByTeam = {};
+  state.teams.forEach(t => {
+    let intensity;
+    if (t.code === epicenterCode) intensity = 'strong';
+    else if (downstreamCodes.includes(t.code)) intensity = 'weak';
+    else intensity = 'normal';
+    readingsByTeam[t.code] = genReadings(pressure.id, intensity, ctx);
+  });
+
+  // Hide one parameter for Field Test
+  let hiddenParam = null;
+  if (ctx.modifier === 'hide-one'){
+    // Hide a parameter that MATTERS for this pressure, on the epicenter team
+    hiddenParam = pick(pressure.exceedances);
+  }
+
+  // Build broadcast
+  const contextNote = pick(CONTEXT_LIBRARY[pressure.id]);
+  const broadcast = `Monitoring network flagged an incident centered at ${epicenterStation.name} (${STATION_BY_CODE[epicenterCode].name}). ${contextNote}`;
+
+  // Scope label
+  let scope = 'Local';
+  if (downstreamCodes.length === 1) scope = 'Linked';
+  if (downstreamCodes.length >= 2 || ctx.modifier === 'force-link') scope = 'Watershed';
+
+  return {
+    pressure,
+    context: ctx,
+    epicenterCode,
+    downstreamCodes,
+    readingsByTeam,
+    hiddenParam,
+    broadcast,
+    contextNote,
+    scope
+  };
+}
+
+// =========================================================
+// TEAM UTILITIES
+// =========================================================
+function initTeam(name, code){
+  return {
+    name, code,
+    score:0,
+    credits:5,
+    tokens:2,
+    roundAnswers:null,   // { classification, thresholds:[], intervention, advisory }
+    exchangeLog:[],
+    hiddenRevealed:false // per-round flag
+  };
+}
+
+function getTeamReadings(team){
+  const r = state.currentEvent.readingsByTeam[team.code];
+  return r;
+}
+
+function classifyReadingStatus(paramId, value){
+  const p = PARAM_BY_ID[paramId];
+  // Check safe ranges
+  if (p.safeMin !== undefined && value < p.safeMin){
+    if (p.warnMin !== undefined && value < p.warnMin) return 'crit';
+    return 'warn';
+  }
+  if (p.safeMax !== undefined && value > p.safeMax){
+    if (p.warnMax !== undefined && value > p.warnMax) return 'crit';
+    return 'warn';
+  }
+  return 'ok';
+}
+
+function getTeamExceedances(team){
+  const readings = getTeamReadings(team);
+  const exc = [];
+  PARAMS.forEach(p => {
+    if (state.currentEvent.hiddenParam === p.id && team.code === state.currentEvent.epicenterCode && !team.hiddenRevealed) return;
+    const s = classifyReadingStatus(p.id, readings[p.id]);
+    if (s === 'warn' || s === 'crit') exc.push(p.id);
+  });
+  return exc;
+}
+
+// =========================================================
+// SCORING (fully deterministic)
+// =========================================================
+function scoreTeamRound(team){
+  const ev = state.currentEvent;
+  const pressure = ev.pressure;
+  const ans = team.roundAnswers;
+  if (!ans) return { total:0, breakdown:{}, crossBorder:false };
+
+  const intensity = team.code === ev.epicenterCode ? 'strong'
+                  : ev.downstreamCodes.includes(team.code) ? 'weak'
+                  : 'normal';
+
+  const expectedExc = (intensity === 'weak')
+    ? (pressure.weakExceedances || pressure.exceedances)
+    : (intensity === 'strong' ? pressure.exceedances : []);
+
+  // Q1 Classification
+  const classifyPts = ans.classification === pressure.id ? 3 : 0;
+
+  // Q2 Thresholds — set comparison, only counts if team exposure is strong or weak (skip if normal)
+  let thresholdPts = 0;
+  let thresholdExpected = expectedExc;
+  if (intensity === 'normal'){
+    // For a team with normal readings, "no exceedances" is technically correct — award full 2 only if they selected none
+    thresholdExpected = [];
+  }
+  const sel = new Set(ans.thresholds || []);
+  const exp = new Set(thresholdExpected);
+  let match = 0;
+  exp.forEach(id => { if (sel.has(id)) match++; });
+  let extras = 0;
+  sel.forEach(id => { if (!exp.has(id)) extras++; });
+  if (exp.size === 0 && sel.size === 0) thresholdPts = 2;
+  else if (match === exp.size && extras === 0) thresholdPts = 2;
+  else if (match >= Math.max(1, exp.size-1) && extras <= 1) thresholdPts = 1;
+  else thresholdPts = 0;
+
+  // Q3 Intervention
+  const interventionPts = ans.intervention === pressure.intervention ? 3 : 0;
+
+  // Q4 Advisory
+  const advisoryPts = ans.advisory === pressure.advisory ? 2 : 0;
+
+  // Cross-border bonus: awarded if team is "weak" (downstream) and classification is correct
+  // AND team made at least one successful data exchange this round
+  let crossBorderBonus = 0;
+  let crossBorder = false;
+  if (intensity === 'weak' && classifyPts === 3 && team.exchangeLog.length > 0){
+    crossBorderBonus = 1;
+    crossBorder = true;
+  }
+
+  const total = classifyPts + thresholdPts + interventionPts + advisoryPts + crossBorderBonus;
+
+  return {
+    total,
+    breakdown:{
+      classification:classifyPts,
+      thresholds:thresholdPts,
+      intervention:interventionPts,
+      advisory:advisoryPts,
+      crossBorder:crossBorderBonus
+    },
+    crossBorder
+  };
+}
+
+// =========================================================
+// SVG MAP
+// =========================================================
+// Simplified country shapes (representative polygons, not cartographic)
+const COUNTRY_SHAPES = {
+  ES: 'M120,300 L180,290 L210,310 L240,340 L230,380 L190,400 L140,395 L100,370 L90,335 Z',
+  FR: 'M250,200 L330,190 L370,210 L380,250 L350,290 L310,300 L270,290 L240,260 L230,225 Z',
+  IT: 'M450,260 L480,250 L495,280 L510,320 L505,360 L480,380 L470,360 L460,330 L450,295 Z',
+  SK: 'M470,155 L540,150 L560,175 L545,200 L500,205 L475,190 Z',
+  GR: 'M555,370 L610,360 L620,390 L605,430 L580,445 L555,430 L548,400 Z',
+  BG: 'M610,210 L680,205 L695,235 L680,270 L640,275 L615,255 Z'
+};
+
+function renderMap(highlight = true){
+  const svgNs = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNs, 'svg');
+  svg.setAttribute('viewBox', '0 0 800 500');
+  svg.classList.add('map-svg');
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', 'Europe water-monitoring map');
+
+  // Connection lines between adjacent stations
+  const drawnConnections = new Set();
+  STATIONS.forEach(s => {
+    s.adj.forEach(adjCode => {
+      const key = [s.code, adjCode].sort().join('-');
+      if (drawnConnections.has(key)) return;
+      drawnConnections.add(key);
+      const target = STATION_BY_CODE[adjCode];
+      const line = document.createElementNS(svgNs, 'line');
+      line.setAttribute('x1', s.x); line.setAttribute('y1', s.y);
+      line.setAttribute('x2', target.x); line.setAttribute('y2', target.y);
+      line.classList.add('connection');
+      svg.appendChild(line);
+    });
+  });
+
+  // Country shapes
+  STATIONS.forEach(s => {
+    const path = document.createElementNS(svgNs, 'path');
+    path.setAttribute('d', COUNTRY_SHAPES[s.code]);
+    path.classList.add('country');
+    const isTeam = state.teams.some(t => t.code === s.code);
+    if (isTeam) path.classList.add('active');
+    if (state.currentEvent && highlight){
+      if (s.code === state.currentEvent.epicenterCode) path.classList.add('epicenter');
+      else if (state.currentEvent.downstreamCodes.includes(s.code)) path.classList.add('downstream');
+    }
+    svg.appendChild(path);
+
+    const lbl = document.createElementNS(svgNs, 'text');
+    lbl.setAttribute('x', s.x);
+    lbl.setAttribute('y', s.y + 22);
+    lbl.setAttribute('text-anchor', 'middle');
+    lbl.classList.add('country-label');
+    lbl.textContent = s.code;
+    svg.appendChild(lbl);
+  });
+
+  // Stations
+  STATIONS.forEach(s => {
+    const c = document.createElementNS(svgNs, 'circle');
+    c.setAttribute('cx', s.x); c.setAttribute('cy', s.y); c.setAttribute('r', 5);
+    c.classList.add('station');
+    if (state.currentEvent && highlight){
+      if (s.code === state.currentEvent.epicenterCode) c.classList.add('epicenter');
+      else if (state.currentEvent.downstreamCodes.includes(s.code)) c.classList.add('downstream');
+    }
+    svg.appendChild(c);
+
+    // Team name label on team stations
+    const isTeam = state.teams.find(t => t.code === s.code);
+    if (isTeam){
+      const name = document.createElementNS(svgNs, 'text');
+      name.setAttribute('x', s.x);
+      name.setAttribute('y', s.y - 10);
+      name.setAttribute('text-anchor', 'middle');
+      name.classList.add('station-label');
+      name.textContent = isTeam.name;
+      svg.appendChild(name);
+    }
+  });
+
+  // Pulse at epicenter
+  if (state.currentEvent && highlight){
+    const ep = STATION_BY_CODE[state.currentEvent.epicenterCode];
+    for (let i = 0; i < 3; i++){
+      const pulse = document.createElementNS(svgNs, 'circle');
+      pulse.setAttribute('cx', ep.x); pulse.setAttribute('cy', ep.y); pulse.setAttribute('r', 5);
+      pulse.classList.add('pulse');
+      pulse.style.animationDelay = (i * 0.8) + 's';
+      svg.appendChild(pulse);
+    }
+  }
+
+  return svg;
+}
+
+// =========================================================
+// MODAL
+// =========================================================
+function openModal(html){
+  modal.innerHTML = html;
+  modalBg.classList.add('open');
+  modalBg.setAttribute('aria-hidden','false');
+}
+function closeModal(){
+  modalBg.classList.remove('open');
+  modalBg.setAttribute('aria-hidden','true');
+}
+modalBg.addEventListener('click', e => {
+  if (e.target === modalBg) closeModal();
+});
+
+// =========================================================
+// SCREENS
+// =========================================================
+function go(next){
+  state.screen = next;
+  const renderers = {
+    home: renderHome,
+    setup: renderSetup,
+    round: renderRound,
+    resolution: renderResolution,
+    final: renderFinal
+  };
+  renderers[next]();
+  playTransition();
+  setFooter(pick(FLAVOR.generic));
+  ambientStart();
+}
+
+// --- HOME ---
+function renderHome(){
+  stage.innerHTML = `
+    <section class="screen">
+      <div class="hero">
+        <div class="panel">
+          <div class="kicker">eTwinning · Guardians of our Waters</div>
+          <h1 class="display-title">Read the <em>river</em>.<br>Run the station.</h1>
+          <p class="lead">A strategy game for 2–3 teams of 14–19-year-olds. Each team runs a national water-monitoring station. Every round, a pressure event propagates across the partner countries. Read the numbers, trade intelligence across borders, classify the pressure, respond. No style points. No voting. Only evidence decides.</p>
+          <div class="chips">
+            <span class="chip accent">2–3 teams</span>
+            <span class="chip">6 rounds · ~35 min</span>
+            <span class="chip">Fully objective scoring</span>
+            <span class="chip">Procedural scenarios</span>
+            <span class="chip">Map-based strategy</span>
+          </div>
+          <div class="narration">
+            Welcome to the mission.<br>
+            Across different waters, the signs are changing.<br>
+            Your task is simple in theory and inconvenient in practice: read the evidence, understand the pressure, and respond correctly.<br>
+            The water system does not reward noise. It rewards attention.
+          </div>
+          <div class="actions">
+            <button class="primary" id="goSetup">Begin Mission</button>
+            <button class="secondary" id="goHowto">How to Play</button>
+          </div>
+        </div>
+        <div class="panel soft">
+          <div class="kicker" style="margin-bottom:12px">Monitoring network</div>
+          <div class="map-wrap">${''}</div>
+          <div class="stat-stack" style="margin-top:14px">
+            <div class="stat">
+              <div class="label">Best mode</div>
+              <div class="value">Shared screen, teams rotate to console</div>
+            </div>
+            <div class="stat">
+              <div class="label">Game language</div>
+              <div class="value mono">English</div>
+            </div>
+            <div class="stat">
+              <div class="label">Partner countries</div>
+              <div class="value mono">IT · ES · GR · FR · SK · BG</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+  // Inject map
+  const mw = stage.querySelector('.map-wrap');
+  mw.appendChild(renderMap(false));
+  const overlay = document.createElement('div');
+  overlay.className = 'map-overlay';
+  overlay.textContent = 'GUARDIANS NETWORK · IDLE';
+  mw.appendChild(overlay);
+
+  $('#goSetup').addEventListener('click', ()=>{ unlockAudio(); playSelect(); go('setup'); });
+  $('#goHowto').addEventListener('click', ()=>{ unlockAudio(); playClick(); showHowTo(); });
+}
+
+function showHowTo(){
+  openModal(`
+    <h3>How to Play</h3>
+    <p class="sub">Confluence is a six-round map strategy game for 2–3 teams. Teams play from the same device, opening a private Station Console one at a time.</p>
+    <ol class="htp-list">
+      <li><strong>Pick your country.</strong><p>Each team chooses a partner-country station: Italy, Spain, Greece, France, Slovakia, or Bulgaria. Countries are geographically linked on the map.</p></li>
+      <li><strong>River Roll.</strong><p>Each round rolls a context: Field Test, Pollution Alert, Rapid Response, Community Message, Cross-Border Link, or Policy Window. This shapes the round.</p></li>
+      <li><strong>Pulse on the map.</strong><p>An event pulses at an epicenter country. Linked countries may see weaker propagation signals. Unaffected countries see baseline readings.</p></li>
+      <li><strong>Open your Station Console.</strong><p>Privately read your own sensor data — real numbers against real thresholds. Then answer four questions: classification, threshold exceedances, intervention, and public advisory.</p></li>
+      <li><strong>Intel Credits (5 per game).</strong><p>Spend 1 Credit to request one parameter reading from a partner station. Downstream teams usually need this to see the full picture.</p></li>
+      <li><strong>Verification Tokens (2 per game).</strong><p>Reveal a hidden reading on your own console. Useful in Field Test rounds or whenever a parameter is flagged offline.</p></li>
+      <li><strong>Scoring (10 per round).</strong><p>Classification +3 · Thresholds +2 · Intervention +3 · Advisory +2 · Cross-border bonus +1 (for correctly classifying an event that reached you via propagation, using at least one exchange).</p></li>
+      <li><strong>Win condition.</strong><p>Highest total after 6 rounds. Tie-breakers: most perfect rounds → most correct classifications → unused Intel Credits.</p></li>
+    </ol>
+    <div class="row" style="margin-top:18px">
+      <button class="primary" id="closeHowto">Understood</button>
+    </div>
+  `);
+  $('#closeHowto').addEventListener('click', ()=>{ playClick(); closeModal(); });
+}
+
+// --- SETUP ---
+function renderSetup(){
+  state.teams = state.teams.length > 0 ? state.teams : [
+    initTeam('Team A', null),
+    initTeam('Team B', null)
+  ];
+
+  stage.innerHTML = `
+    <section class="screen">
+      <div class="panel">
+        <div class="kicker">Mission setup</div>
+        <h2 class="display-title" style="font-size:42px">Assign the <em>stations</em>.</h2>
+        <p class="lead">Each team runs one national monitoring station. Name your team and choose a partner country.</p>
+
+        <div class="field">
+          <label>Number of teams</label>
+          <div class="row" style="gap:6px">
+            <button class="ghost" data-count="2">2 Teams</button>
+            <button class="ghost" data-count="3">3 Teams</button>
+          </div>
+        </div>
+
+        <div id="teamList" class="grid-2" style="margin-top:12px"></div>
+
+        <hr class="div">
+
+        <div class="kicker">Partner countries</div>
+        <p class="note" style="margin:6px 0 10px">Click a country card to assign it to the active team. Each country can only be taken once.</p>
+        <div id="countryGrid" class="country-grid"></div>
+
+        <div class="actions" style="margin-top:20px">
+          <button class="primary" id="startMission">Start Mission</button>
+          <button class="secondary" id="backHome">Back</button>
+        </div>
+      </div>
+    </section>
+  `;
+
+  // Team count buttons
+  stage.querySelectorAll('[data-count]').forEach(b => {
+    if (parseInt(b.dataset.count,10) === state.teams.length) b.classList.add('selected');
+    b.addEventListener('click', ()=>{
+      playClick();
+      const n = parseInt(b.dataset.count,10);
+      if (n > state.teams.length) state.teams.push(initTeam('Team '+String.fromCharCode(65+state.teams.length), null));
+      while (n < state.teams.length) state.teams.pop();
+      renderSetup();
+    });
+  });
+
+  // Team list
+  const tl = $('#teamList');
+  tl.innerHTML = state.teams.map((t, i) => `
+    <div class="panel flat">
+      <div class="kicker">Team ${i+1}</div>
+      <div class="field" style="margin-top:8px">
+        <label>Team name</label>
+        <input data-team-name="${i}" value="${escapeHtml(t.name)}" maxlength="24">
+      </div>
+      <div class="row" style="margin-top:6px">
+        <span class="note">Assigned country:</span>
+        <strong id="teamCountry${i}">${t.code ? STATION_BY_CODE[t.code].name : '—'}</strong>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <button class="ghost" data-select-active="${i}">${state.activeTeamIdx === i ? 'Selecting…' : 'Assign country'}</button>
+      </div>
+    </div>
+  `).join('');
+
+  tl.querySelectorAll('[data-team-name]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      state.teams[parseInt(e.target.dataset.teamName,10)].name = e.target.value.trim() || 'Team';
+    });
+  });
+  tl.querySelectorAll('[data-select-active]').forEach(b => {
+    b.addEventListener('click', ()=>{
+      playClick();
+      state.activeTeamIdx = parseInt(b.dataset.selectActive,10);
+      renderSetup();
+    });
+  });
+
+  // Country grid
+  const cg = $('#countryGrid');
+  cg.innerHTML = STATIONS.map(s => {
+    const owner = state.teams.find(t => t.code === s.code);
+    return `
+      <div class="country-card ${owner ? 'taken' : ''}" data-code="${s.code}">
+        <div class="flag-row"><span class="cc">${s.code}</span></div>
+        <h4>${escapeHtml(s.name)}</h4>
+        <p>${escapeHtml(s.station)}</p>
+        ${owner ? `<span class="owner-tag">${escapeHtml(owner.name)}</span>` : ''}
+      </div>
+    `;
+  }).join('');
+  cg.querySelectorAll('.country-card').forEach(c => {
+    c.addEventListener('click', ()=>{
+      if (c.classList.contains('taken')) return;
+      const code = c.dataset.code;
+      const idx = state.activeTeamIdx ?? 0;
+      state.teams[idx].code = code;
+      state.activeTeamIdx = null;
+      playSelect();
+      renderSetup();
+    });
+  });
+
+  $('#startMission').addEventListener('click', ()=>{
+    // Validation: every team must have a country
+    if (state.teams.some(t => !t.code)){
+      openModal(`<h3>Stations not ready</h3><p class="sub">Every team must be assigned a country before the mission can begin.</p><div class="row" style="margin-top:12px"><button class="primary" id="okClose">Understood</button></div>`);
+      $('#okClose').addEventListener('click', closeModal);
+      return;
+    }
+    playSelect();
+    state.roundIndex = 0;
+    state.usedPressureTypes = [];
+    state.currentEvent = null;
+    state.currentContext = null;
+    state.teams.forEach(t => { t.score=0; t.credits=5; t.tokens=2; t.roundAnswers=null; t.exchangeLog=[]; });
+    startRound();
+  });
+  $('#backHome').addEventListener('click', ()=>{ playClick(); go('home'); });
+}
+
+// --- ROUND flow ---
+function startRound(){
+  // Reset per-round team state
+  state.teams.forEach(t => { t.roundAnswers = null; t.exchangeLog = []; t.hiddenRevealed = false; });
+  state.currentEvent = generateEvent(state.roundIndex);
+  state.currentContext = state.currentEvent.context;
+  go('round');
+}
+
+function renderRound(){
+  const ev = state.currentEvent;
+  const ctx = state.currentContext;
+
+  stage.innerHTML = `
+    <section class="screen">
+      <div class="round-head">
+        <div>
+          <div class="kicker">Round</div>
+          <div class="round-index"><span class="n">${state.roundIndex+1}</span> <span style="color:var(--mute)">/ ${state.totalRounds}</span></div>
+        </div>
+        <div class="round-meta">
+          <span class="tag cyan">Context · ${escapeHtml(ctx.name)}</span>
+          <span class="tag ${ev.scope==='Watershed'?'red':ev.scope==='Linked'?'amber':'cyan'}">Scope · ${ev.scope}</span>
+        </div>
+      </div>
+
+      <div class="round-grid">
+        <div class="panel">
+          <div class="map-wrap" style="aspect-ratio:4/3; min-height:420px">${''}</div>
+          <div class="broadcast">
+            <div class="bc-head">Broadcast · Guardians Network</div>
+            <div class="bc-body">${escapeHtml(ev.broadcast)}</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="roll-stage">
+            <div class="die" id="die"><span id="dieLabel">${escapeHtml(ctx.name)}</span></div>
+            <div class="roll-label">${escapeHtml(ctx.name)}</div>
+            <div class="roll-desc">${escapeHtml(ctx.blurb)}</div>
+          </div>
+          <hr class="div">
+          <div class="kicker">Station consoles</div>
+          <p class="note" style="margin:6px 0 10px">Each team opens its own console privately. Other teams should look away until the active team is done.</p>
+          <div id="teamBar" class="teambar"></div>
+          <div class="actions" style="margin-top:16px">
+            <button class="primary" id="toResolution" disabled>Submit & Resolve</button>
+          </div>
+          <p class="note accent" style="margin-top:10px; font-style:italic; font-family:Fraunces,serif">“${escapeHtml(pick(FLAVOR.preRoll))}”</p>
+        </div>
+      </div>
+    </section>
+  `;
+
+  // Map
+  const mw = stage.querySelector('.map-wrap');
+  mw.appendChild(renderMap(true));
+  const overlay = document.createElement('div');
+  overlay.className = 'map-overlay';
+  overlay.textContent = `EVENT · ${ev.pressure.name.toUpperCase()} · ${ev.scope.toUpperCase()}`;
+  mw.appendChild(overlay);
+
+  // Die roll animation
+  const die = $('#die');
+  die.classList.add('rolling');
+  playRoll();
+  setTimeout(()=>{ die.classList.remove('rolling'); playPulse(); }, 1900);
+
+  // Team bar
+  renderTeamBar();
+}
+
+function renderTeamBar(){
+  const tb = $('#teamBar');
+  if (!tb) return;
+  tb.innerHTML = state.teams.map((t, i) => {
+    const done = !!t.roundAnswers;
+    const stationName = STATION_BY_CODE[t.code].station;
+    return `
+      <div class="team-card ${done ? 'done' : ''}">
+        <div class="meta">
+          <h4>${escapeHtml(t.name)}</h4>
+          <span class="score-tag">${t.score} pts</span>
+        </div>
+        <div class="country">${t.code} · ${escapeHtml(stationName)}</div>
+        <div class="resources">
+          <span>Credits <strong>${t.credits}</strong></span>
+          <span>Tokens <strong>${t.tokens}</strong></span>
+        </div>
+        <div class="state">${done ? 'Submitted' : 'Pending'}</div>
+        <button class="${done ? 'secondary' : 'primary'}" data-open-console="${i}" ${done ? 'disabled' : ''}>${done ? 'Locked in' : 'Open Console'}</button>
+      </div>
+    `;
+  }).join('');
+
+  tb.querySelectorAll('[data-open-console]').forEach(b => {
+    b.addEventListener('click', ()=>{
+      playSelect();
+      const idx = parseInt(b.dataset.openConsole,10);
+      openConsole(idx);
+    });
+  });
+
+  const allDone = state.teams.every(t => !!t.roundAnswers);
+  const btn = $('#toResolution');
+  if (btn){
+    btn.disabled = !allDone;
+    btn.textContent = allDone ? 'Submit & Resolve' : `Waiting on ${state.teams.filter(t=>!t.roundAnswers).length} team(s)`;
+    btn.onclick = ()=> { if (!allDone) return; playTransition(); go('resolution'); };
+  }
+}
+
+// --- CONSOLE MODAL ---
+function openConsole(teamIdx){
+  const team = state.teams[teamIdx];
+  const ev = state.currentEvent;
+  const readings = getTeamReadings(team);
+
+  // Pre-populate pressures options (shuffled for this team)
+  const pressureOpts = shuffle(PRESSURES.slice()).slice(0);
+  const correctInterv = ev.pressure.intervention;
+  const interventionOpts = shuffle([correctInterv, ...ev.pressure.wrongInterv]);
+  const correctAdv = ev.pressure.advisory;
+  const advisoryOpts = shuffle([correctAdv, ...ev.pressure.wrongAdv]);
+
+  // Temporary answer state
+  const ans = {
+    classification: null,
+    thresholds: new Set(),
+    intervention: null,
+    advisory: null
+  };
+
+  const renderReadings = ()=>{
+    return PARAMS.map(p => {
+      const val = readings[p.id];
+      const isHidden = ev.hiddenParam === p.id && team.code === ev.epicenterCode && !team.hiddenRevealed;
+      const status = !isHidden ? classifyReadingStatus(p.id, val) : 'ok';
+      const cls = isHidden ? 'hidden' : (status === 'crit' ? 'crit' : status === 'warn' ? 'warn' : '');
+      const rangeText = (p.safeMin !== undefined && p.safeMax !== undefined) ? `safe ${p.safeMin}–${p.safeMax}` :
+                       (p.safeMin !== undefined) ? `safe ≥ ${p.safeMin}` :
+                       (p.safeMax !== undefined) ? `safe ≤ ${p.safeMax}` : '';
+      return `
+        <div class="reading ${cls}">
+          <span class="p-name">${p.name}</span>
+          <span class="p-val">${isHidden ? '— offline —' : fmt(val, p.decimals)}${(!isHidden && p.unit) ? ' <span style="font-size:11px;color:var(--mute)">'+p.unit+'</span>' : ''}</span>
+          <span class="p-range">${rangeText}${p.unit && rangeText ? ' '+p.unit : ''}</span>
+          ${isHidden && team.tokens > 0 ? `<button class="reveal-btn" data-reveal="${p.id}">Use token</button>` : ''}
+        </div>
+      `;
+    }).join('');
+  };
+
+  const renderBody = ()=>{
+    return `
+      <div class="console-top">
+        <div class="console-identity">
+          <div class="team-id">${team.code} · ${escapeHtml(STATION_BY_CODE[team.code].station).toUpperCase()}</div>
+          <h3>${escapeHtml(team.name)} — Station Console</h3>
+          <div class="sub">Round ${state.roundIndex+1} · ${escapeHtml(ev.context.name)} · Scope: ${ev.scope}</div>
+        </div>
+        <div class="resource-bar">
+          <span class="res-pill"><span class="dot"></span>Intel <strong id="resCredits">${team.credits}</strong></span>
+          <span class="res-pill tokens"><span class="dot"></span>Tokens <strong id="resTokens">${team.tokens}</strong></span>
+        </div>
+      </div>
+
+      <div class="observations">
+        <strong>Field context:</strong> ${escapeHtml(ev.contextNote)}
+      </div>
+
+      <div class="kicker" style="margin-top:8px">Your station readings</div>
+      <div class="readings-grid" id="readingsGrid">${renderReadings()}</div>
+
+      <div class="exchange" id="exchange">
+        <h4>Intel Exchange — 1 credit per request</h4>
+        <div class="xrow">
+          <select id="xStation">${state.teams.filter(t=>t.code!==team.code).map(t=>`<option value="${t.code}">${escapeHtml(t.name)} (${t.code})</option>`).join('')}</select>
+          <select id="xParam">${PARAMS.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select>
+          <button id="xRequest" ${team.credits<=0?'disabled':''}>Request (-1)</button>
+        </div>
+        <div class="exchange-log" id="xLog">
+          ${team.exchangeLog.length === 0 ? '<div style="color:var(--mute)">No exchanges yet.</div>' : team.exchangeLog.map(e=>`<div>· ${escapeHtml(e)}</div>`).join('')}
+        </div>
+      </div>
+
+      <hr class="div">
+
+      <div class="q">
+        <div class="q-head"><span class="qtext">Q1. Classify the pressure.</span><span class="qpts">+3 pts</span></div>
+        <div class="opts" id="qClass">
+          ${pressureOpts.map(p => `
+            <label class="opt" data-class="${p.id}">
+              <input type="radio" name="qClass" value="${p.id}">
+              <span>${escapeHtml(p.name)}<span style="color:var(--mute); font-size:11.5px; display:block">${escapeHtml(p.blurb)}</span></span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="q">
+        <div class="q-head"><span class="qtext">Q2. Which parameters exceed safe thresholds? (Select all that apply.)</span><span class="qpts">+2 pts</span></div>
+        <div class="opts" id="qThresh">
+          ${PARAMS.map(p => `
+            <label class="opt" data-thresh="${p.id}">
+              <input type="checkbox" value="${p.id}">
+              <span>${escapeHtml(p.name)} <span style="color:var(--mute); font-size:11.5px">(safe ${p.safeMin!==undefined?'≥ '+p.safeMin:''}${p.safeMin!==undefined&&p.safeMax!==undefined?' – ':''}${p.safeMax!==undefined?'≤ '+p.safeMax:''}${p.unit?' '+p.unit:''})</span></span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="q">
+        <div class="q-head"><span class="qtext">Q3. Best first action?</span><span class="qpts">+3 pts</span></div>
+        <div class="opts" id="qInterv">
+          ${interventionOpts.map(o => `
+            <label class="opt" data-interv="${escapeHtml(o)}">
+              <input type="radio" name="qInterv" value="${escapeHtml(o)}">
+              <span>${escapeHtml(o)}</span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="q">
+        <div class="q-head"><span class="qtext">Q4. Public advisory?</span><span class="qpts">+2 pts</span></div>
+        <div class="opts" id="qAdv">
+          ${advisoryOpts.map(o => `
+            <label class="opt" data-adv="${escapeHtml(o)}">
+              <input type="radio" name="qAdv" value="${escapeHtml(o)}">
+              <span>${escapeHtml(o)}</span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:18px">
+        <button class="secondary" id="consoleCancel">Close (not submitted)</button>
+        <button class="primary end" id="consoleSubmit" disabled>Lock in answers</button>
+      </div>
+      <p class="note" style="margin-top:8px">Answers cannot be changed after submission. Confidence is useful. Accuracy is better.</p>
+    `;
+  };
+
+  openModal(renderBody());
+
+  const validate = ()=> {
+    const ok = ans.classification && ans.intervention && ans.advisory;
+    document.getElementById('consoleSubmit').disabled = !ok;
+  };
+
+  // Reading reveals
+  const bindReveals = ()=> {
+    modal.querySelectorAll('[data-reveal]').forEach(b => {
+      b.addEventListener('click', ()=>{
+        if (team.tokens <= 0) return;
+        team.tokens -= 1;
+        team.hiddenRevealed = true;
+        playReveal();
+        // Re-render readings grid
+        document.getElementById('readingsGrid').innerHTML = renderReadings();
+        document.getElementById('resTokens').textContent = team.tokens;
+        bindReveals();
+      });
+    });
+  };
+  bindReveals();
+
+  // Intel exchange
+  $('#xRequest').addEventListener('click', ()=>{
+    if (team.credits <= 0) return;
+    const xStation = $('#xStation').value;
+    const xParam = $('#xParam').value;
+    const target = state.teams.find(t => t.code === xStation);
+    if (!target) return;
+    const val = state.currentEvent.readingsByTeam[target.code][xParam];
+    const p = PARAM_BY_ID[xParam];
+    team.credits -= 1;
+    const entry = `${target.code} · ${p.name}: ${fmt(val, p.decimals)}${p.unit?' '+p.unit:''}`;
+    team.exchangeLog.push(entry);
+    playReveal();
+    document.getElementById('resCredits').textContent = team.credits;
+    const log = document.getElementById('xLog');
+    log.innerHTML = team.exchangeLog.map(e=>`<div>· ${escapeHtml(e)}</div>`).join('');
+    if (team.credits <= 0) $('#xRequest').disabled = true;
+  });
+
+  // Radio/checkbox bindings
+  modal.querySelectorAll('[data-class]').forEach(el => {
+    el.addEventListener('click', ()=>{
+      modal.querySelectorAll('[data-class]').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      el.querySelector('input').checked = true;
+      ans.classification = el.dataset.class;
+      playClick();
+      validate();
+    });
+  });
+  modal.querySelectorAll('[data-thresh]').forEach(el => {
+    el.addEventListener('click', e => {
+      if (e.target.tagName !== 'INPUT'){
+        const cb = el.querySelector('input');
+        cb.checked = !cb.checked;
+      }
+      const cb = el.querySelector('input');
+      el.classList.toggle('selected', cb.checked);
+      if (cb.checked) ans.thresholds.add(el.dataset.thresh);
+      else ans.thresholds.delete(el.dataset.thresh);
+      playClick();
+    });
+  });
+  modal.querySelectorAll('[data-interv]').forEach(el => {
+    el.addEventListener('click', ()=>{
+      modal.querySelectorAll('[data-interv]').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      el.querySelector('input').checked = true;
+      ans.intervention = el.dataset.interv;
+      playClick();
+      validate();
+    });
+  });
+  modal.querySelectorAll('[data-adv]').forEach(el => {
+    el.addEventListener('click', ()=>{
+      modal.querySelectorAll('[data-adv]').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      el.querySelector('input').checked = true;
+      ans.advisory = el.dataset.adv;
+      playClick();
+      validate();
+    });
+  });
+
+  // Cancel / Submit
+  $('#consoleCancel').addEventListener('click', ()=>{ playClick(); closeModal(); renderTeamBar(); });
+  $('#consoleSubmit').addEventListener('click', ()=>{
+    if (!ans.classification || !ans.intervention || !ans.advisory) return;
+    team.roundAnswers = {
+      classification: ans.classification,
+      thresholds: Array.from(ans.thresholds),
+      intervention: ans.intervention,
+      advisory: ans.advisory
+    };
+    playSelect();
+    closeModal();
+    renderTeamBar();
+  });
+}
+
+// --- RESOLUTION ---
+function renderResolution(){
+  const ev = state.currentEvent;
+  const pressure = ev.pressure;
+  // Score each team
+  const results = state.teams.map(t => {
+    const r = scoreTeamRound(t);
+    t.score += r.total;
+    return { team:t, ...r };
+  });
+
+  // Determine perfection
+  const anyPerfect = results.some(r => r.total >= 10);
+  const allWeak = results.every(r => r.total <= 3);
+
+  stage.innerHTML = `
+    <section class="screen">
+      <div class="round-head">
+        <div>
+          <div class="kicker">Resolution</div>
+          <div class="round-index">Round <span class="n">${state.roundIndex+1}</span> <span style="color:var(--mute)">/ ${state.totalRounds}</span></div>
+        </div>
+        <div class="round-meta">
+          <span class="tag cyan">Context · ${escapeHtml(ev.context.name)}</span>
+          <span class="tag amber">Epicenter · ${ev.epicenterCode}</span>
+          ${ev.downstreamCodes.length ? `<span class="tag">Linked · ${ev.downstreamCodes.join(', ')}</span>` : ''}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="resolution-head">
+          <div>
+            <div class="true-type"><small>TRUE PRESSURE</small>${escapeHtml(pressure.name)}</div>
+            <p class="lead" style="margin-top:8px; max-width:66ch">${escapeHtml(pressure.blurb)}</p>
+            <p class="note" style="margin-top:6px"><strong style="color:var(--text)">Correct intervention:</strong> ${escapeHtml(pressure.intervention)}</p>
+            <p class="note"><strong style="color:var(--text)">Correct advisory:</strong> ${escapeHtml(pressure.advisory)}</p>
+          </div>
+          <div style="min-width:240px">
+            <div class="stat-stack">
+              <div class="stat">
+                <div class="label">Threshold exceedances (epicenter)</div>
+                <div class="value mono">${pressure.exceedances.map(id=>PARAM_BY_ID[id].name).join(' · ')}</div>
+              </div>
+              ${ev.downstreamCodes.length ? `<div class="stat"><div class="label">Threshold exceedances (downstream)</div><div class="value mono">${(pressure.weakExceedances||pressure.exceedances).map(id=>PARAM_BY_ID[id].name).join(' · ')}</div></div>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <div class="result-teams">
+          ${results.map(r => renderResultCard(r)).join('')}
+        </div>
+
+        <hr class="div">
+        <p class="note" style="font-family:Fraunces,serif; font-style:italic; font-size:15px; color:var(--dim)">“${escapeHtml(anyPerfect ? pick(FLAVOR.afterPerfect) : allWeak ? pick(FLAVOR.afterWeak) : pressure.flavor)}”</p>
+
+        <div class="actions" style="margin-top:16px">
+          <button class="primary" id="nextRound">${state.roundIndex+1 >= state.totalRounds ? 'See Final Results' : 'Next Round'}</button>
+          <button class="secondary" id="viewMap">View Map</button>
+        </div>
+      </div>
+    </section>
+  `;
+
+  if (anyPerfect) playCorrect();
+  else if (allWeak) playWrong();
+  else playTransition();
+
+  $('#nextRound').addEventListener('click', ()=>{
+    playSelect();
+    state.roundIndex += 1;
+    if (state.roundIndex >= state.totalRounds){
+      go('final');
+    } else {
+      startRound();
+    }
+  });
+  $('#viewMap').addEventListener('click', ()=>{
+    playClick();
+    openModal(`<h3>Round Map</h3><p class="sub">Epicenter: ${STATION_BY_CODE[ev.epicenterCode].name} · Linked: ${ev.downstreamCodes.map(c=>STATION_BY_CODE[c].name).join(', ') || 'none'}</p><div class="map-wrap" id="mmm" style="aspect-ratio:4/3"></div><div class="row" style="margin-top:14px"><button class="primary end" id="mmClose">Close</button></div>`);
+    $('#mmm').appendChild(renderMap(true));
+    $('#mmClose').addEventListener('click', closeModal);
+  });
+}
+
+function renderResultCard(r){
+  const t = r.team;
+  const ans = t.roundAnswers;
+  const ev = state.currentEvent;
+  const pressure = ev.pressure;
+  const intensity = t.code === ev.epicenterCode ? 'strong'
+                  : ev.downstreamCodes.includes(t.code) ? 'weak' : 'normal';
+
+  const expectedExc = intensity === 'normal' ? [] :
+                      intensity === 'weak' ? (pressure.weakExceedances || pressure.exceedances) :
+                      pressure.exceedances;
+  const selectedThresh = ans ? ans.thresholds : [];
+
+  return `
+    <div class="result-team">
+      <div class="meta" style="display:flex; justify-content:space-between; align-items:center">
+        <h4>${escapeHtml(t.name)} <span style="color:var(--mute); font-size:12px; font-family:'JetBrains Mono',monospace">· ${t.code}</span></h4>
+        <span class="country" style="font-size:11px; color:var(--mute); font-family:'JetBrains Mono',monospace">${intensity === 'strong' ? 'EPICENTER' : intensity === 'weak' ? 'DOWNSTREAM' : 'BASELINE'}</span>
+      </div>
+      <div class="score-block">
+        <span class="big-score">+${r.total}</span>
+        <span class="max-score">/ 10</span>
+        ${r.crossBorder ? '<span class="tag amber" style="margin-left:auto">Cross-border bonus</span>' : ''}
+      </div>
+      <div class="breakdown">
+        <div class="bd-row"><span>Classification</span><span>${r.breakdown.classification} / 3 ${ans && ans.classification === pressure.id ? '✓' : '✗'}</span></div>
+        <div class="bd-row"><span>Thresholds</span><span>${r.breakdown.thresholds} / 2</span></div>
+        <div class="bd-row"><span>Intervention</span><span>${r.breakdown.intervention} / 3 ${ans && ans.intervention === pressure.intervention ? '✓' : '✗'}</span></div>
+        <div class="bd-row"><span>Advisory</span><span>${r.breakdown.advisory} / 2 ${ans && ans.advisory === pressure.advisory ? '✓' : '✗'}</span></div>
+        ${r.crossBorder ? `<div class="bd-row"><span>Cross-border</span><span>+1</span></div>` : ''}
+        <div class="bd-row" style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--line)"><span>Total score</span><span>${t.score} pts</span></div>
+        ${t.exchangeLog.length ? `<div style="margin-top:8px; font-size:11px; color:var(--mute)">Exchanges: ${t.exchangeLog.length}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// --- FINAL ---
+function renderFinal(){
+  // Sort teams
+  const sorted = state.teams.slice().sort((a,b)=> b.score - a.score);
+  const top = sorted[0];
+
+  const podiumOrder = [];
+  if (sorted.length >= 2) podiumOrder.push(sorted[1]); // second on left
+  podiumOrder.push(sorted[0]);                         // first in center
+  if (sorted.length >= 3) podiumOrder.push(sorted[2]); // third on right
+
+  stage.innerHTML = `
+    <section class="screen">
+      <div class="panel">
+        <div class="kicker">Mission complete</div>
+        <h2 class="display-title" style="font-size:52px">Final <em>Guardian</em> ranking</h2>
+        <p class="lead">Some decisions improved the system. Some merely sounded energetic. What matters is that evidence was read, choices were made, and the water was treated as something worth understanding.</p>
+
+        <div class="podium">
+          ${podiumOrder.map((t, i) => {
+            const rank = sorted.indexOf(t) + 1;
+            const cls = rank === 1 ? 'first' : rank === 2 ? 'second' : 'third';
+            return `
+              <div class="pod ${cls}">
+                <div class="country-tag">${t.code} · ${STATION_BY_CODE[t.code].name}</div>
+                <div class="rank">${rank === 1 ? 'I' : rank === 2 ? 'II' : 'III'}</div>
+                <div class="name">${escapeHtml(t.name)}</div>
+                <div class="final-score">${t.score} pts</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <hr class="div">
+        <div class="kicker">Full standings</div>
+        <div class="result-teams" style="margin-top:10px">
+          ${sorted.map((t, idx) => `
+            <div class="result-team">
+              <div class="meta" style="display:flex; justify-content:space-between; align-items:center">
+                <h4>${idx+1}. ${escapeHtml(t.name)}</h4>
+                <span class="country" style="font-size:11px; color:var(--mute); font-family:'JetBrains Mono',monospace">${t.code}</span>
+              </div>
+              <div class="score-block"><span class="big-score">${t.score}</span><span class="max-score">/ ${state.totalRounds * 10}</span></div>
+              <div class="breakdown">
+                <div class="bd-row"><span>Intel credits left</span><span>${t.credits}</span></div>
+                <div class="bd-row"><span>Tokens unused</span><span>${t.tokens}</span></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="narration" style="margin-top:24px">
+          The mission is complete.<br>
+          The river will continue to have opinions, and the measurements will continue to be real.<br>
+          That is a strong place to begin.
+        </div>
+
+        <div class="actions" style="margin-top:16px">
+          <button class="primary" id="playAgain">New Mission</button>
+          <button class="secondary" id="backHomeFinal">Return to Home</button>
+        </div>
+      </div>
+    </section>
+  `;
+
+  chord([523, 659, 784, 988], 0.6, 'sine', 0.02);
+
+  $('#playAgain').addEventListener('click', ()=>{
+    playSelect();
+    state.teams.forEach(t => { t.score=0; t.credits=5; t.tokens=2; });
+    state.roundIndex = 0;
+    state.usedPressureTypes = [];
+    state.currentEvent = null;
+    startRound();
+  });
+  $('#backHomeFinal').addEventListener('click', ()=>{
+    playSelect();
+    state.teams = [];
+    go('home');
+  });
+}
+
+// =========================================================
+// INIT
+// =========================================================
+$('#audioToggle').addEventListener('click', ()=>{
+  state.audioEnabled = !state.audioEnabled;
+  $('#audioToggle').textContent = 'Audio: ' + (state.audioEnabled ? 'On' : 'Off');
+  if (state.audioEnabled){ unlockAudio(); ambientStart(); }
+  else ambientStop();
+});
+$('#howToBtn').addEventListener('click', ()=>{ unlockAudio(); playClick(); showHowTo(); });
+$('#resetBtn').addEventListener('click', ()=>{
+  openModal(`<h3>Reset mission?</h3><p class="sub">All current progress will be lost.</p><div class="row" style="margin-top:14px"><button class="secondary" id="cancelReset">Cancel</button><button class="primary end" id="confirmReset">Reset</button></div>`);
+  $('#cancelReset').addEventListener('click', closeModal);
+  $('#confirmReset').addEventListener('click', ()=>{
+    closeModal();
+    state.teams = [];
+    state.roundIndex = 0;
+    state.usedPressureTypes = [];
+    state.currentEvent = null;
+    state.activeTeamIdx = null;
+    go('home');
+  });
+});
+
+// Start
+go('home');
+</script>
+</body>
+</html>
