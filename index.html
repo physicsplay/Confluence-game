@@ -906,9 +906,22 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getDatabase, ref, set, get, update, onValue, onDisconnect, push, remove, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// Firebase config loaded from localStorage (set via the config modal).
-let FIREBASE_CONFIG = null;
-try { FIREBASE_CONFIG = JSON.parse(localStorage.getItem('confluence.fbcfg') || 'null'); } catch(e){}
+// Firebase config: can be hardcoded here (for deployments), or loaded from localStorage (per-device config).
+// When hardcoded, every device that opens this page works immediately without setup.
+let FIREBASE_CONFIG = {
+  "apiKey": "AIzaSyBQRJVi3QZsJlvee7HQFrpw7dXwPLhswVU",
+  "authDomain": "confluence-bb9b2.firebaseapp.com",
+  "databaseURL": "https://confluence-bb9b2-default-rtdb.europe-west1.firebasedatabase.app",
+  "projectId": "confluence-bb9b2",
+  "storageBucket": "confluence-bb9b2.firebasestorage.app",
+  "messagingSenderId": "457430377288",
+  "appId": "1:457430377288:web:34f14ccec6fcace5db897d",
+  "measurementId": "G-MMD3GWJE80"
+};
+try {
+  const stored = JSON.parse(localStorage.getItem('confluence.fbcfg') || 'null');
+  if (stored && stored.apiKey) FIREBASE_CONFIG = stored;
+} catch(e){}
 
 // ===== Game data =====
 // =========================================================
