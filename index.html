@@ -1,0 +1,2901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Confluence — Guardians of our Waters (Multi-Device)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg0:#04101c;
+    --bg1:#071827;
+    --bg2:#0d2740;
+    --bg3:#123b56;
+    --panel:rgba(10,24,39,0.68);
+    --panel2:rgba(16,35,57,0.84);
+    --panel3:rgba(255,255,255,0.04);
+    --line:rgba(255,255,255,0.11);
+    --line2:rgba(255,255,255,0.22);
+    --text:#edf6ff;
+    --dim:#b7cbe0;
+    --mute:#7a90a8;
+    --cyan:#74e6ff;
+    --cyan2:#8ff1ff;
+    --green:#7df2b4;
+    --amber:#ffd17e;
+    --red:#ff8585;
+    --violet:#b6a6ff;
+    --warn:#ffb067;
+    --gold:#ffe090;
+    --shadow:0 18px 48px rgba(0,0,0,.4);
+    --shadow-sm:0 6px 18px rgba(0,0,0,.3);
+    --r:20px;
+    --r-sm:12px;
+    --r-xs:8px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0}
+  body{
+    color:var(--text);
+    font-family:Manrope,system-ui,sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(116,230,255,.09), transparent 30%),
+      radial-gradient(circle at 85% 15%, rgba(182,166,255,.09), transparent 28%),
+      radial-gradient(circle at 75% 85%, rgba(125,242,180,.07), transparent 28%),
+      linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 55%, var(--bg0) 100%);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .ambient{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0}
+  .wave{
+    position:absolute; left:-12%; width:124%; height:240px; border-radius:45%;
+    background:linear-gradient(180deg, rgba(116,230,255,.08), rgba(255,255,255,0));
+    filter:blur(16px);
+    animation:drift 22s ease-in-out infinite;
+  }
+  .wave.w1{bottom:6%; opacity:.55; animation-duration:24s}
+  .wave.w2{bottom:0; opacity:.4; transform:scaleX(1.1); animation-duration:30s}
+  .wave.w3{bottom:-4%; opacity:.3; animation-duration:36s}
+  @keyframes drift{
+    0%,100%{transform:translateX(-3%) rotate(-0.3deg)}
+    50%{transform:translateX(3%) rotate(0.3deg)}
+  }
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:1; opacity:.045;
+    background-image:
+      radial-gradient(rgba(255,255,255,.7) 1px, transparent 1px),
+      radial-gradient(rgba(255,255,255,.5) 1px, transparent 1px);
+    background-size:3px 3px, 7px 7px;
+    background-position:0 0, 1px 2px;
+    mix-blend-mode:overlay;
+  }
+
+  .app{
+    position:relative; z-index:2;
+    max-width:1320px; margin:0 auto;
+    padding:20px 26px 40px;
+    min-height:100vh;
+    display:flex; flex-direction:column; gap:18px;
+  }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 18px;
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:16px; backdrop-filter:blur(8px);
+  }
+  .brand{display:flex; align-items:center; gap:14px}
+  .brand-mark{
+    width:36px; height:36px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, var(--cyan2), #2a7fa0 70%, #0a2030);
+    box-shadow:0 0 24px rgba(116,230,255,.35), inset 0 0 10px rgba(255,255,255,.15);
+    position:relative;
+  }
+  .brand-mark::after{
+    content:""; position:absolute; inset:6px; border-radius:50%;
+    background:radial-gradient(circle at 40% 40%, rgba(255,255,255,.3), transparent 45%);
+  }
+  .brand-title{
+    font-family:Fraunces,serif; font-weight:500; font-size:20px; letter-spacing:.02em;
+    font-style:italic;
+  }
+  .brand-sub{font-size:11px; color:var(--mute); letter-spacing:.24em; text-transform:uppercase; margin-top:-2px}
+  .tools{display:flex; gap:8px}
+  .ghost{
+    background:transparent; color:var(--dim);
+    border:1px solid var(--line); padding:7px 13px; border-radius:999px;
+    font:inherit; font-size:12px; cursor:pointer; letter-spacing:.03em;
+    transition:border-color .18s, color .18s, background .18s;
+  }
+  .ghost:hover{color:var(--text); border-color:var(--cyan); background:rgba(116,230,255,.06)}
+  .ghost:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+
+  #stage{min-height:70vh}
+  .screen{
+    padding:4px 0 12px;
+    animation:fadeIn .55s ease both;
+  }
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+
+  .panel{
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--r); padding:28px; box-shadow:var(--shadow);
+    backdrop-filter:blur(10px);
+  }
+  .panel.soft{background:var(--panel2)}
+  .panel.flat{background:var(--panel3); box-shadow:none}
+
+  /* Hero */
+  .hero{
+    display:grid; grid-template-columns:1.35fr 1fr; gap:22px; align-items:stretch;
+  }
+  @media(max-width:940px){ .hero{grid-template-columns:1fr} }
+  .kicker{
+    font-size:11px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--cyan); font-weight:600;
+  }
+  .display-title{
+    font-family:Fraunces,serif; font-weight:500; font-style:italic;
+    font-size:clamp(44px,7vw,74px); line-height:.98;
+    letter-spacing:-0.01em; margin:14px 0 6px;
+    background:linear-gradient(180deg, #f4fbff 20%, #a9d8ec 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .display-title em{font-style:normal; color:var(--cyan); -webkit-text-fill-color:var(--cyan)}
+  .lead{
+    color:var(--dim); font-size:16px; line-height:1.55; max-width:58ch; margin:12px 0 16px;
+  }
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 20px}
+  .chip{
+    font-size:11.5px; padding:5px 11px; border-radius:999px;
+    border:1px solid var(--line2); color:var(--dim);
+    background:rgba(255,255,255,.03); letter-spacing:.02em;
+  }
+  .chip.accent{color:var(--cyan); border-color:rgba(116,230,255,.4); background:rgba(116,230,255,.06)}
+
+  .narration{
+    font-family:Fraunces,serif; font-style:italic; font-weight:400;
+    font-size:15.5px; line-height:1.55; color:var(--dim);
+    padding:16px 18px; border-left:2px solid var(--cyan);
+    background:rgba(116,230,255,.04); border-radius:0 12px 12px 0; margin:10px 0 22px;
+  }
+
+  .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:6px}
+  .primary{
+    background:linear-gradient(180deg, var(--cyan) 0%, #3fb9da 100%);
+    color:#03202c; border:none; padding:13px 22px; border-radius:999px;
+    font:inherit; font-weight:600; font-size:14px; letter-spacing:.03em;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(116,230,255,.22), inset 0 0 0 1px rgba(255,255,255,.2);
+    transition:transform .12s, box-shadow .18s;
+  }
+  .primary:hover{transform:translateY(-1px); box-shadow:0 12px 30px rgba(116,230,255,.3)}
+  .primary:disabled{opacity:.5; cursor:not-allowed; transform:none}
+  .secondary{
+    background:transparent; color:var(--text);
+    border:1px solid var(--line2); padding:12px 20px; border-radius:999px;
+    font:inherit; font-weight:500; font-size:14px; cursor:pointer;
+    transition:border-color .18s, background .18s;
+  }
+  .secondary:hover{border-color:var(--cyan); background:rgba(116,230,255,.05)}
+
+  /* Side stats */
+  .stat-stack{display:flex; flex-direction:column; gap:10px}
+  .stat{
+    padding:14px 16px; border-radius:14px; border:1px solid var(--line);
+    background:rgba(255,255,255,.02);
+  }
+  .stat .label{font-size:11px; color:var(--mute); text-transform:uppercase; letter-spacing:.22em}
+  .stat .value{font-family:Fraunces,serif; font-style:italic; font-size:20px; margin-top:4px}
+  .stat .value.mono{font-family:'JetBrains Mono',monospace; font-style:normal; font-weight:500; font-size:17px}
+
+  /* Setup */
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media(max-width:720px){.grid-2{grid-template-columns:1fr}}
+  .field{display:flex; flex-direction:column; gap:6px; margin-bottom:10px}
+  .field label{font-size:12px; color:var(--mute); text-transform:uppercase; letter-spacing:.18em}
+  .field input, .field select{
+    background:rgba(255,255,255,.03); border:1px solid var(--line2);
+    color:var(--text); padding:11px 14px; border-radius:10px;
+    font:inherit; font-size:14px;
+  }
+  .field input:focus, .field select:focus{outline:none; border-color:var(--cyan); background:rgba(116,230,255,.04)}
+
+  .country-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px; margin-top:8px}
+  .country-card{
+    padding:14px; border-radius:12px; border:1px solid var(--line);
+    background:rgba(255,255,255,.02); cursor:pointer;
+    transition:border-color .18s, transform .1s, background .18s;
+    position:relative;
+  }
+  .country-card:hover{border-color:var(--cyan); background:rgba(116,230,255,.05)}
+  .country-card.selected{border-color:var(--cyan); background:rgba(116,230,255,.08); box-shadow:inset 0 0 0 1px var(--cyan)}
+  .country-card.taken{opacity:.38; pointer-events:none}
+  .country-card .flag-row{display:flex; align-items:center; gap:10px}
+  .country-card .cc{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--mute);
+    padding:2px 7px; border:1px solid var(--line2); border-radius:6px;
+  }
+  .country-card h4{font-family:Fraunces,serif; font-weight:500; font-style:italic; margin:8px 0 2px; font-size:18px}
+  .country-card p{font-size:12px; color:var(--mute); margin:0; line-height:1.4}
+  .country-card .owner-tag{
+    position:absolute; top:10px; right:10px;
+    font-size:10px; padding:3px 8px; border-radius:999px;
+    background:var(--cyan); color:#03202c; font-weight:600; letter-spacing:.05em;
+  }
+
+  /* Map */
+  .map-wrap{
+    position:relative; border-radius:var(--r); overflow:hidden;
+    background:radial-gradient(ellipse at center, rgba(18,59,86,.8), rgba(7,24,39,.9));
+    border:1px solid var(--line); aspect-ratio: 4/3; min-height:360px;
+  }
+  .map-svg{width:100%; height:100%; display:block}
+  .map-svg .country{
+    fill:rgba(116,230,255,.08); stroke:rgba(116,230,255,.28); stroke-width:.5;
+    transition:fill .28s;
+  }
+  .map-svg .country.active{fill:rgba(116,230,255,.22); stroke:var(--cyan)}
+  .map-svg .country.downstream{fill:rgba(255,209,126,.18); stroke:var(--amber)}
+  .map-svg .country.epicenter{fill:rgba(255,133,133,.22); stroke:var(--red)}
+  .map-svg .country-label{
+    font-family:'JetBrains Mono',monospace; font-size:9px; fill:var(--dim);
+    pointer-events:none; letter-spacing:.1em;
+  }
+  .map-svg .station{
+    fill:var(--cyan); filter:drop-shadow(0 0 6px rgba(116,230,255,.5));
+    cursor:default;
+  }
+  .map-svg .station.epicenter{fill:var(--red); filter:drop-shadow(0 0 10px rgba(255,133,133,.7))}
+  .map-svg .station.downstream{fill:var(--amber); filter:drop-shadow(0 0 8px rgba(255,209,126,.6))}
+  .map-svg .station-label{
+    font-family:Manrope,sans-serif; font-weight:600; font-size:10px; fill:var(--text);
+    pointer-events:none;
+  }
+  .map-svg .connection{
+    stroke:rgba(116,230,255,.2); stroke-width:.7; stroke-dasharray:2 3; fill:none;
+  }
+  .map-svg .pulse{
+    fill:none; stroke:var(--red); stroke-width:1.2; opacity:0;
+    animation:pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{opacity:.9; r:3}
+    100%{opacity:0; r:28}
+  }
+  .map-overlay{
+    position:absolute; left:14px; bottom:14px;
+    padding:8px 12px; background:rgba(4,16,28,.7); border:1px solid var(--line);
+    border-radius:8px; font-size:11px; color:var(--dim);
+    font-family:'JetBrains Mono',monospace; letter-spacing:.1em;
+  }
+
+  /* Round screen */
+  .round-grid{display:grid; grid-template-columns:1.25fr 1fr; gap:18px; align-items:start}
+  @media(max-width:980px){.round-grid{grid-template-columns:1fr}}
+
+  .roll-stage{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:16px; padding:30px 24px;
+  }
+  .die{
+    width:120px; height:120px;
+    background:
+      linear-gradient(135deg, rgba(116,230,255,.35) 0%, rgba(116,230,255,.08) 50%, rgba(6,36,58,.8) 100%);
+    border-radius:22px; border:1px solid rgba(116,230,255,.4);
+    display:flex; align-items:center; justify-content:center;
+    font-family:Fraunces,serif; font-style:italic; font-size:15px; color:var(--text);
+    box-shadow:0 0 30px rgba(116,230,255,.25), inset 0 0 20px rgba(255,255,255,.08);
+    text-align:center; padding:10px; line-height:1.15;
+    transform-style:preserve-3d;
+  }
+  .die.rolling{animation:dieSpin 1.8s cubic-bezier(.22,.72,.2,1)}
+  @keyframes dieSpin{
+    0%{transform:rotateX(0) rotateY(0) scale(.95)}
+    50%{transform:rotateX(540deg) rotateY(360deg) scale(1.05)}
+    100%{transform:rotateX(1080deg) rotateY(720deg) scale(1)}
+  }
+  .roll-label{
+    font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:26px;
+    margin-top:6px; text-align:center;
+  }
+  .roll-desc{color:var(--dim); font-size:14px; text-align:center; max-width:46ch}
+
+  .round-head{
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;
+    flex-wrap:wrap; gap:12px;
+  }
+  .round-index{
+    font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:30px;
+  }
+  .round-index .n{color:var(--cyan)}
+  .round-meta{display:flex; gap:8px; flex-wrap:wrap}
+  .tag{
+    font-size:11px; padding:5px 10px; border-radius:6px;
+    font-family:'JetBrains Mono',monospace; letter-spacing:.06em;
+    border:1px solid var(--line2); color:var(--dim);
+  }
+  .tag.cyan{color:var(--cyan); border-color:rgba(116,230,255,.35); background:rgba(116,230,255,.06)}
+  .tag.amber{color:var(--amber); border-color:rgba(255,209,126,.35); background:rgba(255,209,126,.06)}
+  .tag.red{color:var(--red); border-color:rgba(255,133,133,.35); background:rgba(255,133,133,.06)}
+
+  /* Broadcast */
+  .broadcast{
+    padding:18px 20px; border-radius:14px;
+    border:1px solid rgba(255,209,126,.3); background:rgba(255,209,126,.04);
+    margin-top:14px;
+  }
+  .broadcast .bc-head{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em;
+    color:var(--amber); text-transform:uppercase; margin-bottom:8px;
+  }
+  .broadcast .bc-body{font-size:15px; line-height:1.55}
+
+  /* Team bar */
+  .teambar{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:12px;
+    margin-top:14px;
+  }
+  .team-card{
+    padding:14px 16px; border-radius:14px; border:1px solid var(--line);
+    background:rgba(255,255,255,.03);
+    display:flex; flex-direction:column; gap:8px;
+    position:relative; overflow:hidden;
+  }
+  .team-card.ready{border-color:var(--green); background:rgba(125,242,180,.06)}
+  .team-card.done{border-color:var(--cyan); background:rgba(116,230,255,.06)}
+  .team-card h4{margin:0; font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:17px}
+  .team-card .meta{display:flex; justify-content:space-between; align-items:center; gap:8px}
+  .team-card .country{font-size:12px; color:var(--mute); font-family:'JetBrains Mono',monospace; letter-spacing:.08em}
+  .team-card .score-tag{
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600;
+    color:var(--cyan);
+  }
+  .team-card .resources{display:flex; gap:10px; font-size:11px; color:var(--dim); font-family:'JetBrains Mono',monospace}
+  .team-card .resources span strong{color:var(--text); font-weight:600}
+  .team-card .state{
+    font-size:11px; color:var(--mute); letter-spacing:.14em; text-transform:uppercase;
+  }
+  .team-card button{margin-top:4px}
+
+  /* Modal */
+  .modal-bg{
+    position:fixed; inset:0; background:rgba(2,10,18,.76); backdrop-filter:blur(8px);
+    display:none; align-items:center; justify-content:center; z-index:100; padding:16px;
+  }
+  .modal-bg.open{display:flex; animation:fadeIn .2s ease}
+  .modal{
+    max-width:780px; width:100%; max-height:92vh; overflow-y:auto;
+    background:var(--bg1); border:1px solid var(--line2); border-radius:var(--r);
+    padding:26px 28px; box-shadow:0 30px 80px rgba(0,0,0,.6);
+  }
+  .modal h3{font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:26px; margin:0 0 6px}
+  .modal .sub{color:var(--dim); font-size:13px; margin-bottom:16px}
+
+  /* Console */
+  .console-top{display:flex; justify-content:space-between; align-items:start; gap:16px; flex-wrap:wrap}
+  .console-identity{display:flex; flex-direction:column; gap:4px}
+  .console-identity .team-id{
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--cyan); letter-spacing:.14em;
+  }
+  .console-identity h3{margin:0}
+  .resource-bar{
+    display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  }
+  .res-pill{
+    padding:6px 10px; border-radius:8px; font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:.08em;
+    border:1px solid var(--line2); display:flex; align-items:center; gap:6px;
+  }
+  .res-pill .dot{width:7px; height:7px; border-radius:50%; background:var(--cyan)}
+  .res-pill.tokens .dot{background:var(--violet)}
+
+  .readings-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:8px;
+    margin:12px 0;
+  }
+  .reading{
+    padding:10px 12px; border-radius:10px; border:1px solid var(--line);
+    background:rgba(255,255,255,.025);
+    display:flex; flex-direction:column; gap:2px;
+    position:relative;
+  }
+  .reading .p-name{font-size:10px; color:var(--mute); letter-spacing:.12em; text-transform:uppercase}
+  .reading .p-val{
+    font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:600; color:var(--text);
+  }
+  .reading .p-range{font-size:10px; color:var(--mute); font-family:'JetBrains Mono',monospace}
+  .reading.warn{border-color:rgba(255,209,126,.5); background:rgba(255,209,126,.05)}
+  .reading.warn .p-val{color:var(--amber)}
+  .reading.crit{border-color:rgba(255,133,133,.55); background:rgba(255,133,133,.05)}
+  .reading.crit .p-val{color:var(--red)}
+  .reading.hidden{border-style:dashed; border-color:var(--mute)}
+  .reading.hidden .p-val{color:var(--mute); letter-spacing:.1em}
+  .reading .reveal-btn{
+    position:absolute; top:6px; right:6px;
+    background:transparent; color:var(--violet); border:1px solid rgba(182,166,255,.5);
+    border-radius:6px; padding:2px 7px; font:inherit; font-size:10px; cursor:pointer;
+    letter-spacing:.08em;
+  }
+  .reading .reveal-btn:hover{background:rgba(182,166,255,.1)}
+
+  .observations{
+    padding:10px 12px; background:rgba(255,255,255,.025);
+    border:1px solid var(--line); border-radius:10px;
+    font-size:13px; line-height:1.55; color:var(--dim); margin:10px 0;
+  }
+  .observations strong{color:var(--text)}
+  .observations ul{margin:4px 0 0; padding-left:18px}
+  .observations li{margin:2px 0}
+
+  /* Questions */
+  .q{margin:14px 0}
+  .q-head{
+    display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:6px;
+  }
+  .q-head .qtext{font-size:14px; font-weight:600}
+  .q-head .qpts{
+    font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--mute);
+    letter-spacing:.1em; white-space:nowrap;
+  }
+  .opts{display:flex; flex-direction:column; gap:6px}
+  .opt{
+    display:flex; align-items:center; gap:10px; cursor:pointer;
+    padding:9px 12px; border-radius:10px;
+    border:1px solid var(--line); background:rgba(255,255,255,.02);
+    transition:border-color .15s, background .15s;
+    font-size:13.5px;
+  }
+  .opt:hover{border-color:var(--cyan); background:rgba(116,230,255,.04)}
+  .opt.selected{border-color:var(--cyan); background:rgba(116,230,255,.1)}
+  .opt input{accent-color:var(--cyan); flex:0 0 auto}
+  .opt.correct{border-color:var(--green); background:rgba(125,242,180,.09)}
+  .opt.wrong{border-color:var(--red); background:rgba(255,133,133,.07); opacity:.8}
+  .opt .mini-badge{
+    font-family:'JetBrains Mono',monospace; font-size:10px; margin-left:auto;
+    letter-spacing:.1em; padding:2px 6px; border-radius:4px;
+  }
+  .opt.correct .mini-badge{background:rgba(125,242,180,.15); color:var(--green)}
+  .opt.wrong .mini-badge{background:rgba(255,133,133,.12); color:var(--red)}
+
+  /* Exchange */
+  .exchange{
+    padding:14px; border-radius:12px; border:1px dashed rgba(182,166,255,.4);
+    background:rgba(182,166,255,.04); margin:16px 0;
+  }
+  .exchange h4{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--violet); margin:0 0 8px;
+  }
+  .exchange .xrow{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  .exchange select{
+    background:rgba(255,255,255,.04); border:1px solid var(--line2);
+    color:var(--text); padding:7px 10px; border-radius:8px; font:inherit; font-size:13px;
+  }
+  .exchange button{
+    background:transparent; color:var(--violet);
+    border:1px solid rgba(182,166,255,.5);
+    border-radius:8px; padding:7px 12px; font:inherit; font-size:12.5px; cursor:pointer;
+    letter-spacing:.03em;
+  }
+  .exchange button:hover{background:rgba(182,166,255,.1)}
+  .exchange button:disabled{opacity:.4; cursor:not-allowed}
+  .exchange-log{
+    margin-top:10px; font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    color:var(--dim); line-height:1.55;
+  }
+  .exchange-log div{padding:4px 0; border-bottom:1px dashed var(--line)}
+  .exchange-log div:last-child{border-bottom:0}
+
+  /* Resolution */
+  .resolution-head{
+    display:flex; justify-content:space-between; align-items:start; gap:20px; flex-wrap:wrap; margin-bottom:16px;
+  }
+  .true-type{
+    font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:30px;
+  }
+  .true-type small{
+    display:block; font-size:12px; letter-spacing:.2em; color:var(--cyan);
+    font-family:'JetBrains Mono',monospace; font-style:normal; margin-bottom:6px;
+  }
+  .result-teams{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; margin-top:6px}
+  .result-team{
+    padding:14px; border-radius:12px; border:1px solid var(--line);
+    background:rgba(255,255,255,.025);
+  }
+  .result-team h4{margin:0 0 6px; font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:18px}
+  .result-team .score-block{
+    display:flex; align-items:baseline; gap:8px; margin-bottom:8px;
+  }
+  .result-team .big-score{
+    font-family:'JetBrains Mono',monospace; font-size:28px; font-weight:600; color:var(--cyan);
+  }
+  .result-team .max-score{color:var(--mute); font-size:13px}
+  .breakdown{font-size:12px; color:var(--dim); line-height:1.6}
+  .breakdown .bd-row{display:flex; justify-content:space-between; gap:8px}
+  .breakdown .bd-row span:last-child{font-family:'JetBrains Mono',monospace; color:var(--text)}
+
+  /* Final */
+  .podium{
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:20px 0;
+    align-items:end;
+  }
+  @media(max-width:620px){.podium{grid-template-columns:1fr}}
+  .pod{
+    padding:20px; border-radius:14px; text-align:center;
+    border:1px solid var(--line2); background:var(--panel2);
+  }
+  .pod.first{border-color:var(--gold); background:rgba(255,224,144,.08); padding-bottom:44px}
+  .pod.second{border-color:rgba(255,255,255,.3); background:rgba(255,255,255,.04)}
+  .pod.third{border-color:rgba(255,176,103,.4); background:rgba(255,176,103,.04)}
+  .pod .rank{
+    font-family:Fraunces,serif; font-style:italic; font-size:52px; color:var(--text);
+    line-height:1; margin-bottom:8px;
+  }
+  .pod.first .rank{color:var(--gold)}
+  .pod .name{font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:20px; margin-bottom:4px}
+  .pod .final-score{
+    font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:600; color:var(--cyan); margin-top:8px;
+  }
+  .pod .country-tag{font-size:11px; color:var(--mute); font-family:'JetBrains Mono',monospace; letter-spacing:.1em}
+
+  /* Utility */
+  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  .end{margin-left:auto}
+  hr.div{border:0; border-top:1px solid var(--line); margin:18px 0}
+  .note{font-size:12px; color:var(--mute); line-height:1.55}
+  .note.accent{color:var(--cyan)}
+
+  .footer-note{
+    text-align:center; font-size:11px; color:var(--mute); letter-spacing:.14em; text-transform:uppercase;
+    margin-top:14px;
+  }
+  .footer-note.ital{
+    font-family:Fraunces,serif; font-style:italic; font-size:13px; color:var(--dim);
+    text-transform:none; letter-spacing:0;
+  }
+
+  /* How to play */
+  .htp-list{counter-reset:htp; padding:0; margin:0; list-style:none}
+  .htp-list li{counter-increment:htp; position:relative; padding:10px 0 10px 42px; border-bottom:1px dashed var(--line)}
+  .htp-list li:last-child{border-bottom:0}
+  .htp-list li::before{
+    content:counter(htp,decimal-leading-zero);
+    position:absolute; left:0; top:10px;
+    font-family:'JetBrains Mono',monospace; font-size:13px;
+    color:var(--cyan); letter-spacing:.05em;
+  }
+  .htp-list li strong{display:block; font-family:Fraunces,serif; font-style:italic; font-weight:500; font-size:16px; margin-bottom:3px}
+  .htp-list li p{margin:0; color:var(--dim); font-size:13px; line-height:1.55}
+
+  /* Small screen tuning */
+  @media(max-width:520px){
+    .app{padding:14px 14px 30px}
+    .display-title{font-size:40px}
+    .panel{padding:18px}
+    .modal{padding:18px}
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    *, *::before, *::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important}
+  }
+
+
+  /* === MULTI-DEVICE ADDITIONS === */
+  .sync-pill{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:7px 12px; border-radius:999px;
+    border:1px solid var(--line2);
+    background:rgba(116,230,255,.08);
+    color:var(--cyan2);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; font-weight:500;
+    letter-spacing:.06em; text-transform:uppercase;
+  }
+  .sync-pill.off{ background:rgba(255,133,133,.08); color:var(--red); border-color:rgba(255,133,133,.3); }
+  .sync-pill.warn{ background:rgba(255,176,103,.08); color:var(--warn); border-color:rgba(255,176,103,.3); }
+  .sync-dot{ width:7px; height:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); animation:pulse-dot 1.6s infinite; }
+  .sync-pill.off .sync-dot{ background:var(--red); box-shadow:0 0 6px var(--red); }
+  .sync-pill.warn .sync-dot{ background:var(--warn); box-shadow:0 0 6px var(--warn); }
+  @keyframes pulse-dot{ 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  .hidden{ display:none !important; }
+
+  .role-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:22px; }
+  @media (max-width:720px){ .role-grid{ grid-template-columns:1fr; } }
+  .role-card{
+    background:var(--panel); backdrop-filter:blur(14px);
+    border:1px solid var(--line); border-radius:var(--r);
+    padding:26px 24px; cursor:pointer; transition:all .25s ease;
+  }
+  .role-card:hover{ border-color:var(--cyan); transform:translateY(-2px); box-shadow:var(--shadow-sm); }
+  .role-card .role-ico{
+    font-family:Fraunces,serif; font-style:italic; font-size:46px;
+    color:var(--cyan); line-height:1; margin-bottom:10px;
+  }
+  .role-card h3{ margin:0 0 6px; font-family:Fraunces,serif; font-weight:500; font-size:22px; }
+  .role-card p{ margin:0; color:var(--dim); font-size:13.5px; line-height:1.6; }
+
+  .room-code-wrap{
+    display:flex; gap:24px; align-items:center;
+    padding:22px 24px;
+    background:linear-gradient(135deg, rgba(116,230,255,.08), rgba(182,166,255,.05));
+    border:1px solid var(--line2);
+    border-radius:var(--r);
+    margin:18px 0;
+  }
+  @media (max-width:720px){ .room-code-wrap{ flex-direction:column; text-align:center; } }
+  .room-code-big{
+    font-family:'JetBrains Mono',monospace;
+    font-size:46px; font-weight:600;
+    letter-spacing:.18em; color:var(--cyan); line-height:1;
+  }
+  .qr-box{
+    background:#fff; padding:10px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .qr-box canvas{ display:block; width:140px; height:140px; }
+  .join-url{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; color:var(--dim); word-break:break-all;
+  }
+
+  .lobby-teams{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-top:12px; }
+  .lobby-team{
+    display:flex; align-items:center; gap:12px;
+    padding:13px 14px;
+    background:var(--panel2); border:1px solid var(--line);
+    border-radius:var(--r-sm);
+  }
+  .lobby-team .flag{
+    width:40px; height:28px; border-radius:4px;
+    background:var(--panel3);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-weight:600; font-size:13px;
+    color:var(--cyan); border:1px solid var(--line2);
+  }
+  .lobby-team .team-name{ font-weight:500; font-size:14.5px; }
+  .lobby-team .team-status{ font-size:10.5px; color:var(--mute); text-transform:uppercase; letter-spacing:.06em; margin-top:2px; }
+  .lobby-team.offline .team-status{ color:var(--red); }
+  .lobby-team.submitted .team-status{ color:var(--green); }
+  .lobby-slot-empty{
+    padding:13px 14px;
+    border:1px dashed var(--line2); border-radius:var(--r-sm);
+    color:var(--mute); text-align:center;
+    font-size:12.5px; font-style:italic;
+  }
+
+  .country-picker{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin:14px 0; }
+  .country-pick{
+    padding:16px 12px;
+    background:var(--panel2); border:1px solid var(--line);
+    border-radius:var(--r-sm);
+    cursor:pointer; text-align:center;
+    transition:all .2s ease;
+  }
+  .country-pick:hover:not(.taken):not(.selected){ border-color:var(--cyan); background:rgba(116,230,255,.06); }
+  .country-pick.selected{ border-color:var(--cyan); background:rgba(116,230,255,.14); box-shadow:inset 0 0 0 1px var(--cyan); }
+  .country-pick.taken{ opacity:.35; cursor:not-allowed; }
+  .country-pick .cc{ font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:600; color:var(--cyan); }
+  .country-pick .nm{ font-size:12px; color:var(--dim); margin-top:4px; }
+  .country-pick.taken .cc{ color:var(--mute); }
+  .country-pick .tag-taken{ font-size:10px; color:var(--red); text-transform:uppercase; margin-top:3px; letter-spacing:.05em; }
+
+  .host-layout{ display:grid; grid-template-columns:minmax(0,2fr) minmax(260px,1fr); gap:18px; }
+  @media (max-width:960px){ .host-layout{ grid-template-columns:1fr; } }
+  .host-side{ display:flex; flex-direction:column; gap:14px; }
+  .map-wrap{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:14px;
+    aspect-ratio:8/5; overflow:hidden;
+  }
+  .map-wrap svg{ width:100%; height:100%; }
+  .map-legend{
+    display:flex; gap:14px; flex-wrap:wrap; margin-top:10px;
+    font-size:11.5px; color:var(--dim);
+  }
+  .map-legend .legend-item{ display:flex; align-items:center; gap:6px; }
+  .map-legend .swatch{ width:12px; height:12px; border-radius:3px; border:1px solid var(--line2); }
+  .map-legend .swatch.active{ background:rgba(116,230,255,.22); border-color:var(--cyan); }
+  .map-legend .swatch.epicenter{ background:rgba(255,133,133,.22); border-color:var(--red); }
+  .map-legend .swatch.downstream{ background:rgba(255,209,126,.18); border-color:var(--amber); }
+
+  .submit-tracker{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--r);
+    padding:16px 18px;
+  }
+  .submit-tracker h4{ margin:0 0 10px; font-family:Fraunces,serif; font-weight:500; font-size:16px; font-style:italic; }
+  .submit-row{ display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--line); gap:10px; }
+  .submit-row:last-child{ border-bottom:none; }
+  .submit-row .tid{ font-size:13px; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .submit-row .tid b{ font-family:'JetBrains Mono',monospace; color:var(--cyan); margin-right:6px; }
+  .chip{
+    font-size:10px; text-transform:uppercase; letter-spacing:.08em;
+    padding:3px 8px; border-radius:999px; border:1px solid var(--line2);
+    font-family:'JetBrains Mono',monospace; flex:0 0 auto;
+  }
+  .chip.pending{ color:var(--warn); background:rgba(255,176,103,.08); border-color:rgba(255,176,103,.3); }
+  .chip.done{ color:var(--green); background:rgba(125,242,180,.08); border-color:rgba(125,242,180,.3); }
+  .chip.offline{ color:var(--red); background:rgba(255,133,133,.08); border-color:rgba(255,133,133,.3); }
+
+  .waiting-wrap{ text-align:center; padding:50px 20px; }
+  .waiting-wrap .big-wait{
+    font-family:Fraunces,serif; font-style:italic; font-size:30px; color:var(--cyan);
+    font-weight:400; margin-bottom:10px;
+  }
+  .waiting-spinner{
+    display:inline-block; width:48px; height:48px; border-radius:50%;
+    border:3px solid rgba(116,230,255,.18);
+    border-top-color:var(--cyan);
+    margin:20px auto;
+    animation:spin 1.2s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .broadcast-line{
+    font-family:Fraunces,serif; font-style:italic; font-size:16px; color:var(--dim);
+    line-height:1.55; margin:10px 0 4px;
+  }
+  .scope-chip{
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    padding:5px 10px; border-radius:999px;
+    border:1px solid var(--line2); color:var(--dim);
+    background:var(--panel3);
+  }
+  .scope-chip.local{ color:var(--dim); }
+  .scope-chip.linked{ color:var(--amber); border-color:rgba(255,209,126,.35); background:rgba(255,209,126,.06); }
+  .scope-chip.watershed{ color:var(--red); border-color:rgba(255,133,133,.35); background:rgba(255,133,133,.06); }
+
+  .my-score-head{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+    padding:16px; border-radius:14px;
+    background:linear-gradient(135deg, rgba(116,230,255,.07), rgba(182,166,255,.04));
+    border:1px solid var(--line2);
+    margin:16px 0;
+  }
+  .my-score-head .lbl{
+    font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--mute); margin-bottom:6px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .my-score-head .val{
+    font-family:'JetBrains Mono',monospace; font-size:32px; font-weight:600;
+    color:var(--cyan); line-height:1;
+  }
+  .my-score-head .val.total{ color:var(--text); }
+  .my-score-head .val.rank{ color:var(--gold); }
+  .breakdown-mini{
+    display:flex; gap:8px; flex-wrap:wrap;
+    font-size:11.5px; font-family:'JetBrains Mono',monospace;
+    color:var(--dim); margin-top:10px;
+  }
+  .breakdown-mini span{
+    padding:4px 9px; border-radius:999px;
+    border:1px solid var(--line); background:var(--panel3);
+  }
+  .breakdown-mini .xb{ color:var(--violet); border-color:rgba(182,166,255,.3); background:rgba(182,166,255,.06); }
+
+  .answer-box{
+    padding:14px 16px;
+    background:var(--panel2); border:1px solid var(--line);
+    border-radius:var(--r-sm); margin-bottom:8px;
+  }
+  .answer-box .answer-label{
+    font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--mute); font-family:'JetBrains Mono',monospace; margin-bottom:6px;
+  }
+  .answer-box .answer-value{
+    font-size:14px; color:var(--text); line-height:1.5;
+  }
+
+  .final-table{ border:1px solid var(--line); border-radius:var(--r-sm); overflow:hidden; }
+  .final-row{
+    display:grid; grid-template-columns:50px 55px 1fr auto; gap:12px; align-items:center;
+    padding:12px 14px; border-bottom:1px solid var(--line);
+    background:var(--panel2);
+    font-size:14px;
+  }
+  .final-row:last-child{ border-bottom:none; }
+  .final-row.me{ background:rgba(116,230,255,.08); }
+  .final-row .pos{ font-family:'JetBrains Mono',monospace; color:var(--mute); font-size:13px; }
+  .final-row .cc{ font-family:'JetBrains Mono',monospace; color:var(--cyan); font-weight:600; font-size:13px; }
+  .final-row .nm{ font-family:Fraunces,serif; font-style:italic; font-size:16px; }
+  .final-row .sc{ font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--text); }
+
+  .config-form{ display:grid; gap:12px; margin:14px 0; }
+  .config-form label{ font-size:13px; color:var(--dim); font-weight:500; }
+  .config-form input, .config-form textarea{
+    width:100%; padding:11px 14px;
+    background:var(--panel2); border:1px solid var(--line);
+    border-radius:var(--r-xs); color:var(--text);
+    font-family:'JetBrains Mono',monospace; font-size:12px;
+    resize:vertical;
+  }
+  .config-form input:focus, .config-form textarea:focus{ outline:none; border-color:var(--cyan); }
+  .config-form textarea{ min-height:130px; }
+  .config-help{ font-size:12.5px; color:var(--dim); line-height:1.6; }
+  .config-help code{
+    color:var(--cyan2); background:rgba(116,230,255,.08);
+    padding:1px 6px; border-radius:4px; font-size:11.5px;
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  .error-banner{
+    padding:11px 14px;
+    background:rgba(255,133,133,.08); border:1px solid rgba(255,133,133,.3);
+    border-radius:var(--r-xs); color:var(--red);
+    font-size:13px; margin:10px 0;
+  }
+  .info-banner{
+    padding:11px 14px;
+    background:rgba(116,230,255,.06); border:1px solid rgba(116,230,255,.22);
+    border-radius:var(--r-xs); color:var(--dim);
+    font-size:13px; margin:10px 0; line-height:1.6;
+  }
+  .success-banner{
+    padding:11px 14px;
+    background:rgba(125,242,180,.07); border:1px solid rgba(125,242,180,.25);
+    border-radius:var(--r-xs); color:var(--green);
+    font-size:13px; margin:10px 0;
+  }
+
+  .home-hero{ padding:36px 30px; }
+  .home-hero .display-title{ font-family:Fraunces,serif; font-style:italic; font-weight:400; font-size:54px; line-height:1.05; margin:0 0 10px; }
+  .home-hero .kicker{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--cyan); margin-bottom:12px; }
+  .home-hero .lead{ color:var(--dim); font-size:15px; line-height:1.65; max-width:60ch; }
+
+  .console-grid{ display:grid; grid-template-columns:1fr; gap:16px; }
+  @media(min-width:1050px){ .console-grid{ grid-template-columns:1fr 1.1fr; } }
+
+  .ghost.small{ padding:6px 11px; font-size:11px; }
+  button.tiny{ font-size:10.5px; padding:4px 8px; }
+
+  .text-input{
+    width:100%; padding:11px 14px;
+    background:var(--panel2); border:1px solid var(--line);
+    border-radius:var(--r-xs); color:var(--text);
+    font-family:Manrope,sans-serif; font-size:14px;
+  }
+  .text-input:focus{ outline:none; border-color:var(--cyan); }
+
+  .row.end-right{ justify-content:flex-end; }
+
+</style>
+</head>
+<body>
+
+<div class="ambient">
+  <div class="wave w1"></div>
+  <div class="wave w2"></div>
+  <div class="wave w3"></div>
+</div>
+<div class="grain"></div>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-title">Confluence</div>
+        <div class="brand-sub">Guardians of our Waters · Multi-Device</div>
+      </div>
+    </div>
+    <div class="tools">
+      <span id="syncPill" class="sync-pill hidden"><span class="sync-dot"></span><span id="syncText">Connecting</span></span>
+      <button class="ghost" id="audioToggle">Audio: On</button>
+      <button class="ghost" id="howToBtn">How to Play</button>
+      <button class="ghost hidden" id="leaveBtn">Leave</button>
+    </div>
+  </header>
+
+  <main id="stage"></main>
+
+  <div class="footer-note">Objective scoring · No teacher judging · No voting · No style points</div>
+  <div class="footer-note ital" id="footerFlavor">The watershed continues to remember everything.</div>
+</div>
+
+<div id="modalBg" class="modal-bg" role="dialog" aria-modal="true" aria-hidden="true">
+  <div id="modal" class="modal"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, set, get, update, onValue, onDisconnect, push, remove, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// Firebase config loaded from localStorage (set via the config modal).
+let FIREBASE_CONFIG = null;
+try { FIREBASE_CONFIG = JSON.parse(localStorage.getItem('confluence.fbcfg') || 'null'); } catch(e){}
+
+// ===== Game data =====
+// =========================================================
+// STATIONS (partner countries)
+// =========================================================
+const STATIONS = [
+  { code:'IT', name:'Italy',    station:'Tiber–Adriatic Station', x:480, y:300, adj:['FR','GR','SK'] },
+  { code:'ES', name:'Spain',    station:'Ebro Basin Station',     x:200, y:330, adj:['FR'] },
+  { code:'GR', name:'Greece',   station:'Pindus–Aegean Station',  x:580, y:400, adj:['IT','BG'] },
+  { code:'FR', name:'France',   station:'Rhône–Loire Station',    x:330, y:230, adj:['IT','ES','SK'] },
+  { code:'SK', name:'Slovakia', station:'Danube–Tatra Station',   x:500, y:170, adj:['FR','BG','IT'] },
+  { code:'BG', name:'Bulgaria', station:'Danube–Black Sea Station', x:640, y:230, adj:['GR','SK'] }
+];
+const STATION_BY_CODE = Object.fromEntries(STATIONS.map(s=>[s.code,s]));
+
+// =========================================================
+// PARAMETERS and THRESHOLDS (what students read against)
+// =========================================================
+const PARAMS = [
+  { id:'turbidity', name:'Turbidity',   unit:'NTU',       safeMax:5,    warnMax:20,  decimals:1 },
+  { id:'nitrate',   name:'Nitrates',    unit:'mg/L',      safeMax:10,   warnMax:25,  decimals:1 },
+  { id:'phosphate', name:'Phosphates',  unit:'mg/L',      safeMax:0.10, warnMax:0.30,decimals:2 },
+  { id:'do',        name:'Dissolved O₂',unit:'mg/L',      safeMin:6,    warnMin:4,   decimals:1 },
+  { id:'ph',        name:'pH',          unit:'',          safeMin:6.5,  safeMax:8.5, decimals:1 },
+  { id:'cond',      name:'Conductivity',unit:'µS/cm',     safeMax:800,  warnMax:1500,decimals:0 },
+  { id:'temp',      name:'Temperature', unit:'°C',        safeMax:24,   warnMax:28,  decimals:1 },
+  { id:'ecoli',     name:'E. coli',     unit:'CFU/100mL', safeMax:500,  warnMax:1000,decimals:0 },
+  { id:'plastic',   name:'Microplastic',unit:'part/L',    safeMax:1,    warnMax:5,   decimals:1 }
+];
+const PARAM_BY_ID = Object.fromEntries(PARAMS.map(p=>[p.id,p]));
+
+// Baseline ranges for "boring" normal readings
+const BASELINE = {
+  turbidity:[1.2, 4.2],
+  nitrate:[2.0, 8.5],
+  phosphate:[0.02, 0.08],
+  do:[6.8, 9.2],
+  ph:[7.0, 8.2],
+  cond:[180, 620],
+  temp:[14, 21],
+  ecoli:[10, 280],
+  plastic:[0.1, 0.9]
+};
+
+// =========================================================
+// PRESSURE SIGNATURES (what defines each pressure type)
+// =========================================================
+// Each pressure has ranges for affected parameters at "strong" and "weak" intensity.
+// "Strong" = epicenter. "Weak" = downstream propagation.
+const PRESSURES = [
+  {
+    id:'eutrophication',
+    name:'Eutrophication',
+    blurb:'Nutrient enrichment driving algal growth, oxygen stress, and pH swings.',
+    signature:{
+      strong:{ phosphate:[0.32,0.75], nitrate:[12,24], do:[3.2,5.2], ph:[8.5,9.2] },
+      weak:  { phosphate:[0.14,0.28], nitrate:[9.5,14], do:[5.4,6.4], ph:[8.3,8.7] }
+    },
+    exceedances:['phosphate','nitrate','do','ph'],
+    weakExceedances:['phosphate','nitrate'],
+    intervention:'Reduce nutrient inputs, document the bloom, alert environmental authority',
+    advisory:'Bloom activity observed. Avoid contact in affected area. Testing continues.',
+    wrongInterv:[
+      'Declare the water immediately safe and resume activities',
+      'Ignore the bloom and retest in six months',
+      'Request emergency evacuation of the local population'
+    ],
+    wrongAdv:[
+      'Water is dangerous forever. Avoid all lakes permanently.',
+      'The bloom is decorative. Normal use should continue.',
+      'We have no information, so no statement will be issued.'
+    ],
+    flavor:'The lake has entered its algae era. No one benefits.'
+  },
+  {
+    id:'sediment',
+    name:'Sediment Runoff',
+    blurb:'Rainfall-driven sediment and soil entering the water system.',
+    signature:{
+      strong:{ turbidity:[22,48], nitrate:[9.5,16] },
+      weak:  { turbidity:[7,14] }
+    },
+    exceedances:['turbidity','nitrate'],
+    weakExceedances:['turbidity'],
+    intervention:'Investigate runoff pathways and storm-drain inputs, retest downstream',
+    advisory:'Cloudier water observed after rainfall. Avoid direct contact until follow-up testing.',
+    wrongInterv:[
+      'Paint the bins a different color and conclude the matter',
+      'Publish a message that the water is perfectly safe',
+      'Replace local signage before collecting any data'
+    ],
+    wrongAdv:[
+      'The river has been cancelled. Do not approach.',
+      'Visual change is not meaningful. No precautions needed.',
+      'Advisories are premature. Testing will continue privately.'
+    ],
+    flavor:'The water is providing feedback. It is not subtle.'
+  },
+  {
+    id:'microbial',
+    name:'Microbial Contamination',
+    blurb:'Bacterial load rising without obvious visual cues.',
+    signature:{
+      strong:{ ecoli:[1800,4200], turbidity:[5.5,9] },
+      weak:  { ecoli:[650,1200] }
+    },
+    exceedances:['ecoli'],
+    weakExceedances:['ecoli'],
+    intervention:'Issue a temporary no-contact advisory and prioritize microbial testing',
+    advisory:'Recent overflow may affect water safety. Avoid contact until testing confirms conditions.',
+    wrongInterv:[
+      'Declare the water safe because it looks clear',
+      'Focus only on fish counts',
+      'Wait 72 hours and reassess without any advisory'
+    ],
+    wrongAdv:[
+      'The river looks fine, so normal use should continue.',
+      'The river is dangerous forever.',
+      'We have no evidence, therefore we should say nothing.'
+    ],
+    flavor:'Visual clarity continues to overestimate its expertise.'
+  },
+  {
+    id:'saline',
+    name:'Saline Intrusion',
+    blurb:'Salt water entering freshwater systems, often via over-extraction or drought.',
+    signature:{
+      strong:{ cond:[2400,3600] },
+      weak:  { cond:[1050,1500] }
+    },
+    exceedances:['cond'],
+    weakExceedances:['cond'],
+    intervention:'Coordinate cross-border monitoring and reduce groundwater extraction pressure',
+    advisory:'Salinity above reference levels detected. Drinking water sources under review.',
+    wrongInterv:[
+      'Add more fresh water to the delivery system from an unknown source',
+      'Declare the water naturally mineral-rich and bottle it',
+      'Wait until summer and retest casually'
+    ],
+    wrongAdv:[
+      'The water tastes unusual. This is part of local character.',
+      'Seawater is healthy. Encourage increased consumption.',
+      'No information should leave this building until elections.'
+    ],
+    flavor:'The aquifer has concerns. It has been saving them up.'
+  },
+  {
+    id:'thermal',
+    name:'Thermal Pollution',
+    blurb:'Industrial or seasonal heat loading, with oxygen consequences.',
+    signature:{
+      strong:{ temp:[27,31], do:[4.0,5.4] },
+      weak:  { temp:[23.5,26], do:[5.2,6.0] }
+    },
+    exceedances:['temp','do'],
+    weakExceedances:['temp'],
+    intervention:'Engage with the industrial operator and regional authority; require discharge review',
+    advisory:'Elevated thermal discharge under review with national environmental authority.',
+    wrongInterv:[
+      'Open more pipes to increase warm outflow and diversify the river',
+      'Cover the river to keep it warm overnight',
+      'Issue compliments to the operator for consistent performance'
+    ],
+    wrongAdv:[
+      'The river is now a hot spring. Tourism opportunities follow.',
+      'Temperature is a personal opinion. No action required.',
+      'Declare the river extinct as a precaution.'
+    ],
+    flavor:'The river is running a fever. The paperwork has finally arrived.'
+  },
+  {
+    id:'acidification',
+    name:'Acidification Event',
+    blurb:'Sudden pH drop from industrial emissions, acid rain, or chemical drainage.',
+    signature:{
+      strong:{ ph:[4.4,5.6] },
+      weak:  { ph:[5.7,6.3] }
+    },
+    exceedances:['ph'],
+    weakExceedances:['ph'],
+    intervention:'Identify the acid source and engage regional environmental authority',
+    advisory:'Abnormal pH values detected. Cause under investigation with local authorities.',
+    wrongInterv:[
+      'Pour alkaline substances directly into the river immediately',
+      'Close the subject without notifying anyone',
+      'Blame the season and wait it out'
+    ],
+    wrongAdv:[
+      'The river is experimenting. Please respect its choices.',
+      'Acidity is subjective. No public statement needed.',
+      'Declare the water holy and unregulated.'
+    ],
+    flavor:'The pH has fallen out of the acceptable mood.'
+  },
+  {
+    id:'microplastic',
+    name:'Microplastic Concentration',
+    blurb:'Particle load spiking from stormwater, debris accumulation, and fragmentation.',
+    signature:{
+      strong:{ plastic:[12,22], turbidity:[6,12] },
+      weak:  { plastic:[3,6] }
+    },
+    exceedances:['plastic'],
+    weakExceedances:['plastic'],
+    intervention:'Targeted cleanup at drain mouths, document waste types, involve municipal services',
+    advisory:'Debris accumulation observed. Cleanup coordinated. Swimming not recommended in affected area.',
+    wrongInterv:[
+      'Paint the debris in recognizable colors and leave it',
+      'Announce that plastic is part of the natural environment',
+      'Ignore the event and focus only on fish counts'
+    ],
+    wrongAdv:[
+      'Plastic is a cultural element. No public action required.',
+      'Declare full ecosystem collapse and evacuate the region.',
+      'No comment at this time; next quarter perhaps.'
+    ],
+    flavor:'Efficient, accurate, and only mildly disappointed in humanity.'
+  },
+  {
+    id:'industrial',
+    name:'Industrial Anomaly',
+    blurb:'Irregular chemistry suggesting a point-source discharge or spill.',
+    signature:{
+      strong:{ cond:[1400,2200], ph:[4.8,9.6], do:[3.5,5.4] },
+      weak:  { cond:[900,1200] }
+    },
+    exceedances:['cond','ph','do'],
+    weakExceedances:['cond'],
+    intervention:'Request immediate inspection by the environmental inspectorate and alert downstream stations',
+    advisory:'Irregular water chemistry detected. Source investigation underway. Use caution.',
+    wrongInterv:[
+      'Ignore the anomaly as likely a sensor error without checking',
+      'Publish a full rebranding campaign for the river',
+      'Disconnect the sensors permanently'
+    ],
+    wrongAdv:[
+      'Industry is a friend of the river. All is normal.',
+      'Sensor drift suspected. Public information unnecessary.',
+      'Rename the river to avoid future confusion.'
+    ],
+    flavor:'The chemistry has delivered fresh opinions. None of them are calm.'
+  }
+];
+const PRESSURE_BY_ID = Object.fromEntries(PRESSURES.map(p=>[p.id,p]));
+
+// =========================================================
+// ROUND CONTEXTS (River Roll)
+// =========================================================
+const ROUND_CONTEXTS = [
+  { id:'field',      name:'Field Test',       blurb:'One station has a parameter offline. A Verification Token reveals it.', modifier:'hide-one' },
+  { id:'pollution',  name:'Pollution Alert',  blurb:'A clear single-source event. Classification matters most.',             modifier:'none' },
+  { id:'rapid',      name:'Rapid Response',   blurb:'Limited time. The intervention question is the swing point.',           modifier:'none' },
+  { id:'community',  name:'Community Message',blurb:'The public advisory must be proportionate. Not alarmist. Not dismissive.', modifier:'none' },
+  { id:'crossborder',name:'Cross-Border Link',blurb:'Epicenter in one country, symptoms in another. Trade intelligence.',     modifier:'force-link' },
+  { id:'policy',     name:'Policy Window',    blurb:'The correct intervention depends on institutional scope.',               modifier:'none' }
+];
+
+// =========================================================
+// GENERIC OBSERVATIONS (flavor for evidence cards)
+// =========================================================
+const CONTEXT_LIBRARY = {
+  eutrophication:[
+    'Warm, still conditions for the past several days.',
+    'A greenish film was reported near a sheltered cove.',
+    'Fish observed near the surface at dawn.'
+  ],
+  sediment:[
+    'Heavy rainfall 12–24 hours earlier.',
+    'Small litter clusters near storm drains.',
+    'Flow is faster than the weekly average.'
+  ],
+  microbial:[
+    'Combined-sewer overflow notice issued recently.',
+    'Public bathing area remains open by default.',
+    'The water looks entirely normal to the eye.'
+  ],
+  saline:[
+    'Extended dry period; local reservoirs low.',
+    'Increased reports of off-taste from drinking water.',
+    'Irrigation pumps operating at above-average rates.'
+  ],
+  thermal:[
+    'Warm industrial outlet active upstream.',
+    'Fish activity unusually high in the morning.',
+    'Seasonal conditions should be milder than observed.'
+  ],
+  acidification:[
+    'Mild chemical odor reported by nearby residents.',
+    'Recent industrial runoff incident in the area.',
+    'Aquatic vegetation showing unusual discoloration.'
+  ],
+  microplastic:[
+    'Visible debris accumulation near drain mouths.',
+    'Recent storm surge redistributed shoreline litter.',
+    'Sampling filter loaded faster than protocol expects.'
+  ],
+  industrial:[
+    'An unregistered discharge was reported last night.',
+    'Unusual sheen observed on the water surface.',
+    'A nearby facility logged a maintenance event.'
+  ]
+};
+
+const FLAVOR = {
+  preRoll:[
+    'The river has submitted fresh evidence.',
+    'Conditions are changing in ways the spreadsheet will need to acknowledge.',
+    'A new file has arrived from the watershed.',
+    'The data is beginning to develop opinions.',
+    'Something upstream has been decided without asking.'
+  ],
+  afterPerfect:[
+    'The evidence was read correctly. The river is briefly optimistic.',
+    'A rare and excellent display of restraint.',
+    'Decisive and accurate. An uncommon combination.',
+    'The dataset has approved of this submission.'
+  ],
+  afterWeak:[
+    'The dataset suggested another conclusion.',
+    'A preventable disagreement with the facts.',
+    'An ambitious theory. The numbers preferred another one.',
+    'Unsupported confidence remains decorative.'
+  ],
+  generic:[
+    'The watershed continues to remember everything.',
+    'Water systems remain connected despite repeated attempts to ignore this.',
+    'Confidence is useful. Accuracy is better.',
+    'The situation is not dramatic. It is simply measurable.'
+  ]
+};
+
+// =========================================================
+
+
+// ===== Utilities =====
+const $ = sel => document.querySelector(sel);
+const stage = $('#stage');
+const modalBg = $('#modalBg');
+const modal  = $('#modal');
+const rand = (min,max)=> Math.random()*(max-min)+min;
+const randInt = (min,max)=> Math.floor(rand(min,max+0.999));
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+const shuffle = arr => { const a = arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function fmt(n, decimals){ if (decimals === undefined) decimals = 2; return Number(n).toFixed(decimals); }
+function setFooter(text){ $('#footerFlavor').textContent = text; }
+
+// ===== Audio (Web Audio synth, identical to single-device) =====
+let audioCtx=null, masterGain=null, ambientOsc=null, ambientGain=null;
+function unlockAudio(){
+  if (audioCtx) return;
+  try{
+    audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    masterGain = audioCtx.createGain(); masterGain.gain.value = 0.12;
+    masterGain.connect(audioCtx.destination);
+  } catch(e){ audioCtx=null; }
+}
+function tone(freq, dur, type, gain, when){
+  freq = freq||440; dur = dur||0.12; type = type||'sine'; gain = gain||0.025; when = when||0;
+  if (!audioCtx || !localState.audioEnabled) return;
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type=type; o.frequency.value=freq; g.gain.value=0;
+  o.connect(g); g.connect(masterGain);
+  const t = audioCtx.currentTime+when;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(gain, t+0.008);
+  g.gain.linearRampToValueAtTime(0, t+dur);
+  o.start(t); o.stop(t+dur+0.02);
+}
+function chord(freqs, dur, type, gain){ (freqs||[]).forEach((f,i)=> tone(f, dur||0.3, type||'sine', gain||0.02, i*0.015)); }
+function playClick(){ tone(580, 0.06, 'triangle', 0.016); }
+function playSelect(){ tone(720, 0.08, 'sine', 0.02); }
+function playCorrect(){ chord([523, 659, 784], 0.35, 'sine', 0.024); }
+function playWrong(){ tone(180, 0.25, 'sawtooth', 0.02); }
+function playTransition(){ chord([392, 523], 0.25, 'sine', 0.018); }
+function playPulse(){ chord([220,330,440], 0.5, 'sine', 0.018); setTimeout(()=> chord([165,247,330], 0.5, 'sine', 0.014), 120); }
+function playRoll(){ for(let i=0;i<6;i++) setTimeout(()=> tone(240+Math.random()*280, 0.05, 'triangle', 0.012), i*55); }
+function playReveal(){ chord([440, 554, 659], 0.3, 'triangle', 0.02); }
+function ambientStart(){
+  if (!audioCtx || ambientOsc) return;
+  ambientGain = audioCtx.createGain(); ambientGain.gain.value=0.015;
+  ambientOsc = audioCtx.createOscillator();
+  ambientOsc.type='sine'; ambientOsc.frequency.value=96;
+  ambientOsc.connect(ambientGain); ambientGain.connect(masterGain);
+  ambientOsc.start();
+}
+function ambientStop(){ if (ambientOsc){ try{ ambientOsc.stop(); } catch(e){} ambientOsc=null; } }
+
+// ===== Logic + map =====
+// =========================================================
+// PURE GAME LOGIC — matches single-device data schema
+// =========================================================
+function genReadings(pressureId, intensity, roundCtx){
+  const pressure = PRESSURE_BY_ID[pressureId];
+  const readings = {};
+  // Start from baseline random in range
+  PARAMS.forEach(p => {
+    const [lo, hi] = BASELINE[p.id];
+    readings[p.id] = rand(lo, hi);
+  });
+  // Apply pressure signature
+  if (intensity === 'strong' || intensity === 'weak'){
+    const sig = pressure.signature[intensity] || {};
+    Object.keys(sig).forEach(paramId => {
+      const [lo, hi] = sig[paramId];
+      readings[paramId] = rand(lo, hi);
+    });
+  }
+  // Modifier: amplify for rapid context
+  if (roundCtx.modifier === 'amplify' && intensity === 'strong'){
+    const sig = pressure.signature.strong || {};
+    Object.keys(sig).forEach(paramId => {
+      readings[paramId] = readings[paramId] * 1.15;
+    });
+  }
+  return readings;
+}
+
+function generateEvent(teams, roundIdx, totalRounds, lastContextId, usedPressureTypes){
+  // Pick a context
+  let ctx;
+  if (roundIdx === 0){
+    ctx = ROUND_CONTEXTS.find(c => c.id === 'pollution');
+  } else if (roundIdx === totalRounds-1){
+    ctx = ROUND_CONTEXTS.find(c => c.id === 'crossborder');
+  } else {
+    const pool = ROUND_CONTEXTS.filter(c => c.id !== lastContextId);
+    ctx = pick(pool);
+  }
+  // Pick a pressure, avoiding repeats where possible
+  const available = PRESSURES.filter(p => !(usedPressureTypes||[]).includes(p.id));
+  const pressure = available.length > 0 ? pick(available) : pick(PRESSURES);
+
+  const teamCodes = teams.map(t => t.code);
+  const epicenterCode = pick(teamCodes);
+  const epicenterStation = STATION_BY_CODE[epicenterCode];
+
+  const linked = epicenterStation.adj.filter(c => teamCodes.includes(c));
+  let downstreamCodes = [];
+  if (ctx.modifier === 'force-link' && linked.length > 0){
+    downstreamCodes = shuffle(linked).slice(0, Math.min(2, linked.length));
+  } else if (linked.length > 0){
+    const cnt = randInt(0, Math.min(1, linked.length));
+    downstreamCodes = shuffle(linked).slice(0, cnt);
+  }
+
+  const readingsByTeam = {};
+  teams.forEach(t => {
+    let intensity;
+    if (t.code === epicenterCode) intensity = 'strong';
+    else if (downstreamCodes.includes(t.code)) intensity = 'weak';
+    else intensity = 'normal';
+    readingsByTeam[t.code] = genReadings(pressure.id, intensity, ctx);
+  });
+
+  // Hide-one: hide a relevant parameter on epicenter team
+  let hiddenParam = null;
+  if (ctx.modifier === 'hide-one' && pressure.exceedances.length > 0){
+    hiddenParam = pick(pressure.exceedances);
+  }
+
+  // Build broadcast text
+  const contextNote = pick(CONTEXT_LIBRARY[pressure.id]);
+  const broadcast = `Monitoring network flagged an incident centered at ${epicenterStation.station} (${STATION_BY_CODE[epicenterCode].name}). ${contextNote}`;
+
+  // Scope
+  let scope = 'Local';
+  if (downstreamCodes.length === 1) scope = 'Linked';
+  if (downstreamCodes.length >= 2 || ctx.modifier === 'force-link') scope = 'Watershed';
+
+  // Pre-shuffle options for Q3 / Q4 so all teams see consistent order
+  const interventionOpts = shuffle([pressure.intervention, ...pressure.wrongInterv]);
+  const advisoryOpts = shuffle([pressure.advisory, ...pressure.wrongAdv]);
+  const classificationOpts = shuffle(PRESSURES.map(p => p.id));
+
+  return {
+    pressureId: pressure.id,
+    contextId: ctx.id,
+    epicenterCode,
+    downstreamCodes,
+    readingsByTeam,
+    hiddenParam,
+    broadcast,
+    contextNote,
+    scope,
+    interventionOpts,
+    advisoryOpts,
+    classificationOpts
+  };
+}
+
+function classifyReadingStatus(paramId, value){
+  const p = PARAM_BY_ID[paramId];
+  if (p.safeMin !== undefined && value < p.safeMin){
+    if (p.warnMin !== undefined && value < p.warnMin) return 'crit';
+    return 'warn';
+  }
+  if (p.safeMax !== undefined && value > p.safeMax){
+    if (p.warnMax !== undefined && value > p.warnMax) return 'crit';
+    return 'warn';
+  }
+  return 'ok';
+}
+
+function scoreTeamRound(teamCode, event, submission, exchangeLogSize){
+  const pressure = PRESSURE_BY_ID[event.pressureId];
+  if (!submission){
+    return { total:0, breakdown:{classification:0,thresholds:0,intervention:0,advisory:0,crossBorder:0}, crossBorder:false };
+  }
+
+  const intensity = teamCode === event.epicenterCode ? 'strong'
+                  : event.downstreamCodes.includes(teamCode) ? 'weak' : 'normal';
+
+  const expectedExc = (intensity === 'weak')
+    ? (pressure.weakExceedances || pressure.exceedances)
+    : (intensity === 'strong' ? pressure.exceedances : []);
+
+  const classifyPts = submission.classification === pressure.id ? 3 : 0;
+
+  let thresholdPts = 0;
+  let thresholdExpected = intensity === 'normal' ? [] : expectedExc;
+  const sel = new Set(submission.thresholds || []);
+  const exp = new Set(thresholdExpected);
+  let match = 0;
+  exp.forEach(id => { if (sel.has(id)) match++; });
+  let extras = 0;
+  sel.forEach(id => { if (!exp.has(id)) extras++; });
+  if (exp.size === 0 && sel.size === 0) thresholdPts = 2;
+  else if (match === exp.size && extras === 0) thresholdPts = 2;
+  else if (match >= Math.max(1, exp.size-1) && extras <= 1) thresholdPts = 1;
+  else thresholdPts = 0;
+
+  const interventionPts = submission.intervention === pressure.intervention ? 3 : 0;
+  const advisoryPts = submission.advisory === pressure.advisory ? 2 : 0;
+
+  let crossBorderBonus = 0;
+  let crossBorder = false;
+  if (intensity === 'weak' && classifyPts === 3 && (exchangeLogSize||0) > 0){
+    crossBorderBonus = 1;
+    crossBorder = true;
+  }
+
+  const total = classifyPts + thresholdPts + interventionPts + advisoryPts + crossBorderBonus;
+  return {
+    total,
+    breakdown:{
+      classification:classifyPts,
+      thresholds:thresholdPts,
+      intervention:interventionPts,
+      advisory:advisoryPts,
+      crossBorder:crossBorderBonus
+    },
+    crossBorder
+  };
+}
+
+// =========================================================
+// MAP RENDER
+// =========================================================
+const COUNTRY_SHAPES = {
+  ES:'M 110 280 Q 110 260 140 256 L 200 254 Q 240 250 260 270 L 270 300 Q 270 340 240 360 L 200 370 Q 150 370 130 350 Q 110 320 110 280 Z',
+  FR:'M 260 200 Q 260 180 300 172 L 360 174 Q 400 180 410 210 L 410 250 Q 400 285 360 295 L 300 295 Q 270 285 260 260 L 258 220 Z',
+  IT:'M 430 260 Q 440 240 470 236 L 500 240 Q 510 260 500 290 L 480 330 Q 475 360 490 380 L 500 410 Q 480 420 470 400 L 460 370 Q 445 340 440 310 L 430 280 Z',
+  SK:'M 440 150 Q 450 135 490 132 L 540 136 Q 570 145 575 165 L 560 190 Q 530 200 490 198 L 455 190 Q 440 175 440 155 Z',
+  GR:'M 540 370 Q 545 350 575 344 L 615 348 Q 630 370 625 400 L 610 425 Q 590 438 560 432 L 545 418 Q 535 395 540 375 Z',
+  BG:'M 590 200 Q 600 185 640 182 L 680 188 Q 700 205 695 230 L 680 252 Q 650 265 615 258 L 595 240 Q 585 220 590 205 Z'
+};
+
+function renderMap(teams, event, highlight){
+  if (highlight === undefined) highlight = true;
+  const svgNs = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNs, 'svg');
+  svg.setAttribute('viewBox', '0 0 800 500');
+  svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+  svg.classList.add('map-svg');
+
+  const drawn = new Set();
+  STATIONS.forEach(s => {
+    s.adj.forEach(adjCode => {
+      const key = [s.code, adjCode].sort().join('-');
+      if (drawn.has(key)) return;
+      drawn.add(key);
+      const t = STATION_BY_CODE[adjCode];
+      const line = document.createElementNS(svgNs, 'line');
+      line.setAttribute('x1', s.x); line.setAttribute('y1', s.y);
+      line.setAttribute('x2', t.x); line.setAttribute('y2', t.y);
+      line.classList.add('connection');
+      svg.appendChild(line);
+    });
+  });
+
+  STATIONS.forEach(s => {
+    const path = document.createElementNS(svgNs, 'path');
+    path.setAttribute('d', COUNTRY_SHAPES[s.code]);
+    path.classList.add('country');
+    const isTeam = teams && teams.some(t => t.code === s.code);
+    if (isTeam) path.classList.add('active');
+    if (event && highlight){
+      if (s.code === event.epicenterCode) path.classList.add('epicenter');
+      else if (event.downstreamCodes.includes(s.code)) path.classList.add('downstream');
+    }
+    svg.appendChild(path);
+
+    const lbl = document.createElementNS(svgNs, 'text');
+    lbl.setAttribute('x', s.x);
+    lbl.setAttribute('y', s.y + 22);
+    lbl.setAttribute('text-anchor', 'middle');
+    lbl.classList.add('country-label');
+    lbl.textContent = s.code;
+    svg.appendChild(lbl);
+  });
+
+  STATIONS.forEach(s => {
+    const c = document.createElementNS(svgNs, 'circle');
+    c.setAttribute('cx', s.x); c.setAttribute('cy', s.y); c.setAttribute('r', 5);
+    c.classList.add('station');
+    if (event && highlight){
+      if (s.code === event.epicenterCode) c.classList.add('epicenter');
+      else if (event.downstreamCodes.includes(s.code)) c.classList.add('downstream');
+    }
+    svg.appendChild(c);
+  });
+
+  return svg;
+}
+
+
+// ===== Screens and flow =====
+// =========================================================
+// MODAL / ROUTER
+// =========================================================
+function openModal(html){
+  modal.innerHTML = html;
+  modalBg.classList.add('open');
+  modalBg.setAttribute('aria-hidden','false');
+}
+function closeModal(){
+  modalBg.classList.remove('open');
+  modalBg.setAttribute('aria-hidden','true');
+  modal.innerHTML = '';
+}
+modalBg.addEventListener('click', e => { if (e.target === modalBg) closeModal(); });
+
+function go(screenId, renderFn){
+  localState.currentScreen = screenId;
+  stage.style.transition = 'opacity .18s ease';
+  stage.style.opacity = 0;
+  setTimeout(() => {
+    stage.innerHTML = '';
+    try { renderFn(); }
+    catch(err){
+      console.error(err);
+      stage.innerHTML = `<div class="panel"><h2>Rendering error</h2><p class="sub">${escapeHtml(err.message)}</p></div>`;
+    }
+    stage.style.opacity = 1;
+    playTransition();
+  }, 180);
+}
+
+// =========================================================
+// LOCAL STATE
+// =========================================================
+const localState = {
+  roomCode: null,
+  myUid: null,
+  myTeamId: null,
+  firebaseApp: null,
+  db: null,
+  auth: null,
+  room: null,
+  unsubscribers: [],
+  audioEnabled: true,
+  currentScreen: null,
+  syncStatus: 'offline',
+  pendingRoomCode: null,
+  advanceTimer: null,
+  advanceCountdown: 0,
+  tryingResolve: false,
+  tryingAdvance: false
+};
+
+function setSyncStatus(s, text){
+  localState.syncStatus = s;
+  const pill = $('#syncPill');
+  if (!pill) return;
+  pill.classList.remove('hidden','off','warn');
+  if (s === 'offline') pill.classList.add('off');
+  else if (s === 'warn') pill.classList.add('warn');
+  $('#syncText').textContent = text || (s === 'online' ? 'Live' : s === 'offline' ? 'Offline' : 'Syncing');
+}
+
+// =========================================================
+// FIREBASE
+// =========================================================
+async function initFirebase(cfg){
+  localState.firebaseApp = initializeApp(cfg);
+  localState.db = getDatabase(localState.firebaseApp);
+  localState.auth = getAuth(localState.firebaseApp);
+  await signInAnonymously(localState.auth);
+  return new Promise(resolve => {
+    onAuthStateChanged(localState.auth, user => {
+      if (user){ localState.myUid = user.uid; resolve(user); }
+    });
+  });
+}
+
+function roomPath(code, sub){ return sub ? `rooms/${code}/${sub}` : `rooms/${code}`; }
+
+function generateRoomCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i=0;i<4;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+function subscribe(path, cb){
+  const r = ref(localState.db, path);
+  const unsub = onValue(r, snap => cb(snap.val()), err => {
+    console.error('Subscription error:', err);
+    setSyncStatus('warn', 'Sync issue');
+  });
+  localState.unsubscribers.push(unsub);
+  return unsub;
+}
+
+function unsubscribeAll(){
+  localState.unsubscribers.forEach(u => { try{ u(); } catch(e){} });
+  localState.unsubscribers = [];
+}
+
+function extractTeams(room){
+  if (!room || !room.teams) return [];
+  return Object.entries(room.teams)
+    .map(([id, t]) => ({ id, ...t }))
+    .filter(t => t.code && t.name);
+}
+
+function getMyTeam(){
+  if (!localState.room || !localState.room.teams || !localState.myTeamId) return null;
+  const t = localState.room.teams[localState.myTeamId];
+  if (!t) return null;
+  return { id: localState.myTeamId, ...t };
+}
+
+// =========================================================
+// ROUTER
+// =========================================================
+function onRoomUpdate(){
+  const room = localState.room;
+  if (!room || !room.meta) return;
+  const status = room.meta.status;
+  if (!localState.myTeamId) return;
+
+  if (status === 'lobby'){
+    if (localState.currentScreen !== 'lobby') go('lobby', renderLobby);
+    else refreshLobby();
+  } else if (status === 'round_playing'){
+    if (localState.currentScreen !== 'playing') go('playing', renderLivePlaying);
+    else refreshLivePlaying();
+    checkAndTriggerAutoResolve();
+  } else if (status === 'round_resolution'){
+    if (localState.currentScreen !== 'resolution') go('resolution', renderLiveResolution);
+  } else if (status === 'final'){
+    if (localState.currentScreen !== 'final') go('final', renderLiveFinal);
+  }
+}
+
+// =========================================================
+// HOME
+// =========================================================
+function renderHome(){
+  $('#leaveBtn').classList.add('hidden');
+  $('#syncPill').classList.add('hidden');
+  setFooter("The watershed continues to remember everything.");
+  const hasCfg = !!FIREBASE_CONFIG && FIREBASE_CONFIG.apiKey;
+  stage.innerHTML = `
+    <div class="panel home-hero">
+      <div class="kicker">eTwinning · Guardians of our Waters</div>
+      <h1 class="display-title">Confluence</h1>
+      <p class="lead">A cross-border water-intelligence game. Each team monitors one national station. Incidents ripple across the network. Teams read data, trade intelligence across borders, and submit diagnoses. Scoring is fully objective. <b>No host needed — teams play directly with each other.</b></p>
+      ${hasCfg ? '' : '<div class="info-banner" style="margin-top:16px"><b>First time on this device?</b> Paste the Firebase configuration below (see the <code>ΟΔΗΓΟΣ_FIREBASE_SETUP.md</code> file).</div>'}
+
+      <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:22px">
+        <div class="panel soft" style="padding:22px">
+          <h3 style="font-family:Fraunces,serif;font-style:italic;font-weight:500;font-size:22px;margin:0 0 6px">Start a new game</h3>
+          <p class="sub" style="margin-bottom:14px">Your team will create the room. Other teams join with the code you'll get.</p>
+          <button class="primary" id="createBtn" style="width:100%" ${!hasCfg ? 'disabled' : ''}>Create a room</button>
+        </div>
+        <div class="panel soft" style="padding:22px">
+          <h3 style="font-family:Fraunces,serif;font-style:italic;font-weight:500;font-size:22px;margin:0 0 6px">Join an existing game</h3>
+          <p class="sub" style="margin-bottom:10px">Enter the 4-letter code from the other team.</p>
+          <div class="row" style="gap:8px">
+            <input type="text" id="joinCodeInput" class="text-input" maxlength="4" placeholder="XXXX" style="text-transform:uppercase; letter-spacing:.2em; font-family:'JetBrains Mono',monospace; text-align:center" ${!hasCfg ? 'disabled' : ''}>
+            <button class="secondary" id="joinBtn" ${!hasCfg ? 'disabled' : ''}>Join</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:22px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px">
+        <a href="confluence_guardians_of_our_waters.html" target="_blank" style="color:var(--mute); font-size:12.5px; text-decoration:none; border-bottom:1px dashed var(--line2); padding-bottom:1px">No internet? Use the single-device version →</a>
+        <div class="row" style="gap:8px">
+          <button class="ghost small" id="configBtn">${hasCfg ? 'Reconfigure Firebase' : 'Configure Firebase'}</button>
+          ${hasCfg ? '<button class="ghost small" id="clearCfgBtn">Clear config</button>' : ''}
+        </div>
+      </div>
+    </div>
+  `;
+
+  $('#createBtn').addEventListener('click', ()=>{
+    unlockAudio(); playSelect();
+    if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.apiKey){ openConfigForm(true, 'create'); return; }
+    go('picker', ()=>renderStationPicker('create'));
+  });
+
+  const joinCodeInput = $('#joinCodeInput');
+  const joinAction = () => {
+    const code = (joinCodeInput.value||'').toUpperCase().trim();
+    if (!/^[A-Z2-9]{4}$/.test(code)){
+      joinCodeInput.style.borderColor = 'var(--red)';
+      return;
+    }
+    unlockAudio(); playSelect();
+    if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.apiKey){ openConfigForm(true, 'join:'+code); return; }
+    localState.pendingRoomCode = code;
+    go('picker', ()=>renderStationPicker('join', code));
+  };
+  if (joinCodeInput){
+    joinCodeInput.addEventListener('input', ()=>{ joinCodeInput.style.borderColor=''; joinCodeInput.value = joinCodeInput.value.toUpperCase(); });
+    joinCodeInput.addEventListener('keyup', (e)=>{ if (e.key==='Enter') joinAction(); });
+  }
+  $('#joinBtn').addEventListener('click', joinAction);
+
+  $('#configBtn').addEventListener('click', ()=>{ playClick(); openConfigForm(false); });
+  const clr = $('#clearCfgBtn');
+  if (clr){
+    clr.addEventListener('click', ()=>{
+      localStorage.removeItem('confluence.fbcfg');
+      FIREBASE_CONFIG = null;
+      go('home', renderHome);
+    });
+  }
+}
+
+function openConfigForm(autoContinue, intent){
+  const current = FIREBASE_CONFIG ? JSON.stringify(FIREBASE_CONFIG, null, 2) : `{
+  "apiKey": "...",
+  "authDomain": "your-project.firebaseapp.com",
+  "databaseURL": "https://your-project-default-rtdb.europe-west1.firebasedatabase.app",
+  "projectId": "your-project",
+  "storageBucket": "your-project.appspot.com",
+  "messagingSenderId": "...",
+  "appId": "..."
+}`;
+  openModal(`
+    <h3>Firebase configuration</h3>
+    <p class="sub">Paste your Firebase Web App config object. Security comes from database rules, not hiding these values.</p>
+    <div class="config-help" style="margin:10px 0">Full step-by-step in <code>ΟΔΗΓΟΣ_FIREBASE_SETUP.md</code>.</div>
+    <div class="config-form">
+      <label for="cfgJson">Firebase config (JSON)</label>
+      <textarea id="cfgJson" spellcheck="false">${escapeHtml(current)}</textarea>
+      <div id="cfgError" class="error-banner hidden"></div>
+    </div>
+    <div class="row end-right">
+      <button class="secondary" id="cfgCancel">Cancel</button>
+      <button class="primary" id="cfgSave">Save &amp; continue</button>
+    </div>
+  `);
+  $('#cfgCancel').addEventListener('click', closeModal);
+  $('#cfgSave').addEventListener('click', async ()=>{
+    const txt = $('#cfgJson').value.trim();
+    let parsed;
+    try { parsed = JSON.parse(txt); }
+    catch(err){
+      $('#cfgError').textContent = 'Not valid JSON: ' + err.message;
+      $('#cfgError').classList.remove('hidden');
+      return;
+    }
+    if (!parsed.apiKey || !parsed.databaseURL){
+      $('#cfgError').textContent = 'Missing apiKey or databaseURL.';
+      $('#cfgError').classList.remove('hidden');
+      return;
+    }
+    localStorage.setItem('confluence.fbcfg', JSON.stringify(parsed));
+    FIREBASE_CONFIG = parsed;
+    closeModal();
+    if (autoContinue === true && intent === 'create') go('picker', ()=>renderStationPicker('create'));
+    else if (autoContinue === true && intent && intent.startsWith('join:')){
+      const code = intent.slice(5);
+      go('picker', ()=>renderStationPicker('join', code));
+    } else go('home', renderHome);
+  });
+}
+
+// =========================================================
+// STATION PICKER
+// =========================================================
+async function renderStationPicker(mode, roomCode){
+  $('#leaveBtn').classList.remove('hidden');
+  setSyncStatus('warn', 'Connecting');
+  $('#syncPill').classList.remove('hidden');
+
+  stage.innerHTML = `
+    <div class="panel">
+      <div class="kicker">${mode === 'create' ? 'New room' : 'Room ' + escapeHtml(roomCode||'')}</div>
+      <h2 style="font-family:Fraunces,serif;font-style:italic;font-weight:500;font-size:28px;margin:4px 0 6px">${mode === 'create' ? 'Create your team' : 'Pick your station'}</h2>
+      <p class="sub">Give your team a name and pick the country your station monitors.</p>
+
+      <div style="margin-top:14px">
+        <label class="sub" style="display:block; font-size:12.5px; color:var(--dim); margin-bottom:6px">Team name</label>
+        <input type="text" id="teamNameInput" maxlength="28" placeholder="e.g. The Nitrates, Station Aegean…" class="text-input">
+      </div>
+
+      <div style="margin-top:16px">
+        <label class="sub" style="display:block; font-size:12.5px; color:var(--dim); margin-bottom:6px">Country station</label>
+        <div class="country-picker" id="countryPicker">${
+          STATIONS.map(s => `
+            <div class="country-pick" data-code="${s.code}">
+              <div class="cc">${s.code}</div>
+              <div class="nm">${escapeHtml(s.name)}</div>
+            </div>
+          `).join('')
+        }</div>
+      </div>
+
+      <div id="pickerErr" class="error-banner hidden"></div>
+      <div id="pickerStatus" class="sub" style="font-size:12px; color:var(--mute); margin-top:8px"></div>
+
+      <div class="row end-right" style="margin-top:14px">
+        <button class="secondary" id="backPicker">Back</button>
+        <button class="primary" id="submitPicker" disabled>${mode === 'create' ? 'Create room &amp; join' : 'Join room'}</button>
+      </div>
+    </div>
+  `;
+
+  let selectedCode = null;
+  let takenCountries = new Set();
+
+  try {
+    await initFirebase(FIREBASE_CONFIG);
+    setSyncStatus('online', 'Live');
+  } catch(err){
+    setSyncStatus('offline', 'Error');
+    $('#pickerErr').textContent = 'Connection failed: ' + err.message;
+    $('#pickerErr').classList.remove('hidden');
+    return;
+  }
+
+  if (mode === 'join'){
+    try {
+      const metaSnap = await get(ref(localState.db, roomPath(roomCode, 'meta')));
+      if (!metaSnap.exists()){
+        $('#pickerErr').textContent = `Room ${roomCode} not found. Check the code with the other team.`;
+        $('#pickerErr').classList.remove('hidden');
+        $('#submitPicker').disabled = true;
+        return;
+      }
+      const meta = metaSnap.val();
+      if (meta.status !== 'lobby'){
+        $('#pickerErr').textContent = `Room ${roomCode} is already playing. Create a new room instead.`;
+        $('#pickerErr').classList.remove('hidden');
+        $('#submitPicker').disabled = true;
+        return;
+      }
+      subscribe(roomPath(roomCode, 'teams'), (teamsData) => {
+        takenCountries = new Set();
+        if (teamsData){
+          Object.values(teamsData).forEach(t => { if (t && t.code) takenCountries.add(t.code); });
+        }
+        updatePickerUI();
+      });
+    } catch(err){
+      $('#pickerErr').textContent = 'Failed to read room: ' + err.message;
+      $('#pickerErr').classList.remove('hidden');
+    }
+  }
+
+  function updatePickerUI(){
+    document.querySelectorAll('.country-pick').forEach(el => {
+      const c = el.dataset.code;
+      const isTaken = takenCountries.has(c);
+      el.classList.toggle('taken', isTaken);
+      if (isTaken && el.classList.contains('selected')){
+        el.classList.remove('selected');
+        selectedCode = null;
+      }
+      let tag = el.querySelector('.tag-taken');
+      if (isTaken && !tag){
+        tag = document.createElement('div');
+        tag.className = 'tag-taken';
+        tag.textContent = 'Taken';
+        el.appendChild(tag);
+      } else if (!isTaken && tag){
+        tag.remove();
+      }
+    });
+    updateSubmitButton();
+  }
+
+  function updateSubmitButton(){
+    const name = $('#teamNameInput').value.trim();
+    $('#submitPicker').disabled = !selectedCode || name.length < 2;
+  }
+
+  $('#countryPicker').addEventListener('click', (e) => {
+    const el = e.target.closest('.country-pick');
+    if (!el || el.classList.contains('taken')) return;
+    playSelect();
+    document.querySelectorAll('.country-pick').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedCode = el.dataset.code;
+    updateSubmitButton();
+  });
+  $('#teamNameInput').addEventListener('input', updateSubmitButton);
+  $('#backPicker').addEventListener('click', ()=>{
+    unsubscribeAll();
+    setSyncStatus('offline', 'Offline');
+    $('#syncPill').classList.add('hidden');
+    $('#leaveBtn').classList.add('hidden');
+    go('home', renderHome);
+  });
+  $('#submitPicker').addEventListener('click', async ()=>{
+    const name = $('#teamNameInput').value.trim();
+    if (!name || !selectedCode) return;
+    $('#submitPicker').disabled = true;
+    $('#pickerStatus').textContent = mode === 'create' ? 'Creating room…' : 'Joining room…';
+    try {
+      if (mode === 'create') await doCreateRoom(name, selectedCode);
+      else await doJoinRoom(roomCode, name, selectedCode);
+    } catch(err){
+      $('#pickerErr').textContent = err.message;
+      $('#pickerErr').classList.remove('hidden');
+      $('#submitPicker').disabled = false;
+      $('#pickerStatus').textContent = '';
+    }
+  });
+}
+
+async function doCreateRoom(teamName, teamCountry){
+  unsubscribeAll();
+  let code;
+  for (let i=0; i<8; i++){
+    code = generateRoomCode();
+    const snap = await get(ref(localState.db, roomPath(code, 'meta')));
+    if (!snap.exists()) break;
+  }
+  localState.roomCode = code;
+
+  const teamsRef = ref(localState.db, roomPath(code, 'teams'));
+  const newTeamRef = push(teamsRef);
+  const teamId = newTeamRef.key;
+
+  await set(ref(localState.db, roomPath(code)), {
+    meta:{ creatorUid: localState.myUid, status:'lobby', createdAt: serverTimestamp(), totalRounds: 6 },
+    teams: {
+      [teamId]: {
+        code: teamCountry,
+        name: teamName,
+        credits: 5,
+        tokens: 2,
+        score: 0,
+        connected: true,
+        hiddenRevealed: false,
+        joinedAt: serverTimestamp(),
+        uid: localState.myUid
+      }
+    },
+    round: null,
+    submissions: null,
+    resolutions: null,
+    exchanges: null,
+    usedPressures: null,
+    lastContextId: null
+  });
+
+  localState.myTeamId = teamId;
+  sessionStorage.setItem(`confluence.team.${code}`, JSON.stringify({ teamId }));
+  onDisconnect(newTeamRef).update({ connected: false });
+
+  subscribe(roomPath(code), data => {
+    localState.room = data;
+    setSyncStatus('online', 'Live');
+    onRoomUpdate();
+  });
+
+  go('lobby', renderLobby);
+}
+
+async function doJoinRoom(code, teamName, teamCountry){
+  unsubscribeAll();
+  localState.roomCode = code;
+
+  const teamsRef = ref(localState.db, roomPath(code, 'teams'));
+  const newTeamRef = push(teamsRef);
+  const teamId = newTeamRef.key;
+  await set(newTeamRef, {
+    code: teamCountry,
+    name: teamName,
+    credits: 5,
+    tokens: 2,
+    score: 0,
+    connected: true,
+    hiddenRevealed: false,
+    joinedAt: serverTimestamp(),
+    uid: localState.myUid
+  });
+  localState.myTeamId = teamId;
+  sessionStorage.setItem(`confluence.team.${code}`, JSON.stringify({ teamId }));
+  onDisconnect(newTeamRef).update({ connected: false });
+
+  subscribe(roomPath(code), data => {
+    localState.room = data;
+    setSyncStatus('online', 'Live');
+    onRoomUpdate();
+  });
+
+  go('lobby', renderLobby);
+}
+
+// =========================================================
+// LOBBY
+// =========================================================
+function renderLobby(){
+  const code = localState.roomCode;
+  const joinUrl = `${location.origin}${location.pathname}?room=${code}`;
+  stage.innerHTML = `
+    <div class="panel">
+      <div class="kicker">Room ready</div>
+      <h2 style="font-family:Fraunces,serif;font-style:italic;font-weight:500;font-size:30px;margin:4px 0 10px">Lobby</h2>
+      <p class="sub">Share the code or QR with the other teams. Each team joins from their own device.</p>
+
+      <div class="room-code-wrap">
+        <div style="flex:1; min-width:0">
+          <div class="sub" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.14em;font-family:'JetBrains Mono',monospace;color:var(--mute)">Room code</div>
+          <div class="room-code-big" id="bigCode">${code}</div>
+          <div class="join-url" style="margin-top:8px">${escapeHtml(joinUrl)}</div>
+        </div>
+        <div class="qr-box"><canvas id="qrCanvas"></canvas></div>
+      </div>
+
+      <div class="row" style="justify-content:space-between; align-items:flex-end; margin-top:8px">
+        <h4 style="font-family:Fraunces,serif;font-weight:500;font-style:italic;font-size:18px;margin:0">Teams <span id="teamCount" style="color:var(--mute);font-weight:400;font-family:'JetBrains Mono',monospace;font-size:13px"></span></h4>
+      </div>
+      <div class="lobby-teams" id="lobbyTeams"></div>
+
+      <div class="row" style="margin-top:22px; justify-content:space-between; align-items:center; flex-wrap:wrap">
+        <div class="sub" id="lobbyHint">Waiting for at least 2 teams.</div>
+        <button class="primary" id="startGameBtn" disabled>Start game</button>
+      </div>
+      <p class="sub" style="font-size:11.5px; color:var(--mute); margin-top:10px; font-style:italic">Any team can start once ≥2 are ready. Rounds advance automatically afterwards.</p>
+    </div>
+  `;
+
+  const canvas = $('#qrCanvas');
+  if (window.QRCode){
+    QRCode.toCanvas(canvas, joinUrl, { width: 140, margin: 1, color: { dark: '#04101c', light: '#ffffff' } });
+  }
+
+  $('#startGameBtn').addEventListener('click', async ()=>{
+    playTransition();
+    await tryStartGame();
+  });
+  refreshLobby();
+}
+
+function refreshLobby(){
+  if (localState.currentScreen !== 'lobby') return;
+  const room = localState.room;
+  const teams = extractTeams(room);
+  const container = $('#lobbyTeams');
+  if (!container) return;
+  container.innerHTML = '';
+  teams.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'lobby-team' + (t.connected === false ? ' offline' : '');
+    const isMe = t.id === localState.myTeamId;
+    div.innerHTML = `
+      <div class="flag">${escapeHtml(t.code)}</div>
+      <div style="flex:1; min-width:0">
+        <div class="team-name">${escapeHtml(t.name)}${isMe ? ' <span style="color:var(--cyan);font-size:11px;margin-left:4px">(you)</span>' : ''}</div>
+        <div class="team-status">${t.connected === false ? 'Offline' : 'Ready'}</div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+  const slotsNeeded = Math.max(0, 2 - teams.length);
+  for (let i=0;i<slotsNeeded;i++){
+    const div = document.createElement('div');
+    div.className = 'lobby-slot-empty';
+    div.textContent = 'Waiting for team…';
+    container.appendChild(div);
+  }
+  $('#teamCount').textContent = `· ${teams.length}/6`;
+  $('#startGameBtn').disabled = teams.length < 2;
+  $('#lobbyHint').textContent = teams.length < 2
+    ? 'Waiting for at least 2 teams.'
+    : `${teams.length} teams ready. Any team can start.`;
+}
+
+// =========================================================
+// START GAME
+// =========================================================
+async function tryStartGame(){
+  const code = localState.roomCode;
+  if (!code) return;
+  const statusRef = ref(localState.db, roomPath(code, 'meta/status'));
+  const txResult = await runTransaction(statusRef, (current) => {
+    if (current !== 'lobby') return;
+    return 'round_starting';
+  });
+  if (!txResult.committed) return;
+  await writeNextRound(0);
+}
+
+async function writeNextRound(roundIdx){
+  const code = localState.roomCode;
+  const roomSnap = await get(ref(localState.db, roomPath(code)));
+  const room = roomSnap.val();
+  if (!room) return;
+  const teams = extractTeams(room);
+  if (teams.length < 2) return;
+
+  const totalRounds = room.meta.totalRounds || 6;
+  const usedPressures = room.usedPressures || [];
+  const lastContextId = room.lastContextId || null;
+
+  if (roundIdx >= totalRounds){
+    await update(ref(localState.db, roomPath(code, 'meta')), { status:'final' });
+    return;
+  }
+
+  const event = generateEvent(teams, roundIdx, totalRounds, lastContextId, usedPressures);
+
+  const teamUpdates = {};
+  teams.forEach(t => {
+    if (roundIdx === 0){
+      teamUpdates[`teams/${t.id}/credits`] = 5;
+      teamUpdates[`teams/${t.id}/tokens`] = 2;
+    }
+    teamUpdates[`teams/${t.id}/hiddenRevealed`] = false;
+  });
+
+  await update(ref(localState.db, roomPath(code)), {
+    round: { index: roundIdx, phase:'playing', event, startedAt: serverTimestamp() },
+    usedPressures: [...usedPressures, event.pressureId],
+    lastContextId: event.contextId,
+    'meta/status': 'round_playing',
+    [`submissions/${roundIdx}`]: null,
+    [`exchanges/${roundIdx}`]: null,
+    ...teamUpdates
+  });
+}
+
+// =========================================================
+// AUTO-RESOLVE
+// =========================================================
+async function checkAndTriggerAutoResolve(){
+  if (localState.tryingResolve) return;
+  const room = localState.room;
+  if (!room || !room.meta || room.meta.status !== 'round_playing' || !room.round) return;
+  const teams = extractTeams(room);
+  const roundIdx = room.round.index;
+  const subs = (room.submissions && room.submissions[roundIdx]) || {};
+  const activeTeams = teams.filter(t => t.connected !== false);
+  if (activeTeams.length === 0) return;
+  const allSubmitted = activeTeams.every(t => subs[t.id]);
+  if (!allSubmitted) return;
+
+  localState.tryingResolve = true;
+  try {
+    const code = localState.roomCode;
+    const statusRef = ref(localState.db, roomPath(code, 'meta/status'));
+    const txResult = await runTransaction(statusRef, (current) => {
+      if (current !== 'round_playing') return;
+      return 'round_resolving';
+    });
+    if (!txResult.committed){ localState.tryingResolve = false; return; }
+    await writeResolutions(roundIdx);
+    await update(ref(localState.db, roomPath(code, 'meta')), { status: 'round_resolution' });
+  } catch(err){
+    console.error('Auto-resolve failed:', err);
+  } finally {
+    localState.tryingResolve = false;
+  }
+}
+
+async function writeResolutions(roundIdx){
+  const code = localState.roomCode;
+  const roomSnap = await get(ref(localState.db, roomPath(code)));
+  const room = roomSnap.val();
+  if (!room || !room.round) return;
+  const teams = extractTeams(room);
+  const round = room.round;
+  const subs = (room.submissions && room.submissions[roundIdx]) || {};
+  const exchanges = (room.exchanges && room.exchanges[roundIdx]) || {};
+  const resolutions = {};
+  const scoreUpdates = {};
+
+  teams.forEach(t => {
+    const submission = subs[t.id];
+    const teamExchanges = exchanges[t.id] || {};
+    const logSize = Object.keys(teamExchanges).length;
+    const result = scoreTeamRound(t.code, round.event, submission, logSize);
+    resolutions[t.id] = { ...result, submitted: !!submission };
+    scoreUpdates[`teams/${t.id}/score`] = (t.score||0) + result.total;
+  });
+
+  await update(ref(localState.db, roomPath(code)), {
+    [`resolutions/${roundIdx}`]: resolutions,
+    'round/phase': 'resolved',
+    ...scoreUpdates
+  });
+}
+
+// =========================================================
+// AUTO-ADVANCE
+// =========================================================
+async function tryAutoAdvance(){
+  if (localState.tryingAdvance) return;
+  localState.tryingAdvance = true;
+  try {
+    const code = localState.roomCode;
+    const room = localState.room;
+    if (!room || !room.meta) return;
+    const totalRounds = room.meta.totalRounds || 6;
+    const currentRoundIdx = room.round ? room.round.index : 0;
+    const nextRoundIdx = currentRoundIdx + 1;
+    const isLast = nextRoundIdx >= totalRounds;
+
+    const statusRef = ref(localState.db, roomPath(code, 'meta/status'));
+    const txResult = await runTransaction(statusRef, (current) => {
+      if (current !== 'round_resolution') return;
+      return isLast ? 'final' : 'round_advancing';
+    });
+    if (!txResult.committed) return;
+    if (!isLast) await writeNextRound(nextRoundIdx);
+  } catch(err){
+    console.error('Auto-advance failed:', err);
+  } finally {
+    localState.tryingAdvance = false;
+  }
+}
+
+// =========================================================
+// LIVE PLAYING
+// =========================================================
+function renderLivePlaying(){
+  if (localState.advanceTimer){ clearInterval(localState.advanceTimer); localState.advanceTimer = null; }
+
+  const room = localState.room;
+  const team = getMyTeam();
+  if (!team || !room.round) return;
+  const teams = extractTeams(room);
+  const round = room.round;
+  const event = round.event;
+  const ctx = ROUND_CONTEXTS.find(c => c.id === event.contextId);
+  const readings = event.readingsByTeam[team.code];
+  if (!readings) return;
+
+  const intensity = team.code === event.epicenterCode ? 'strong'
+                  : event.downstreamCodes.includes(team.code) ? 'weak' : 'normal';
+  const intensityLabel = intensity === 'strong' ? 'Epicenter' : intensity === 'weak' ? 'Linked (downstream)' : 'Normal';
+  const scopeClass = intensity === 'strong' ? 'watershed' : intensity === 'weak' ? 'linked' : 'local';
+
+  const subs = (room.submissions && room.submissions[round.index]) || {};
+  const exchanges = (room.exchanges && room.exchanges[round.index] && room.exchanges[round.index][team.id]) || {};
+  const alreadySubmitted = !!subs[team.id];
+
+  stage.innerHTML = `
+    <div class="panel">
+      <div class="kicker">Round ${round.index+1}/${room.meta.totalRounds} · ${escapeHtml(ctx.name)} · ${escapeHtml(team.code)}</div>
+      <div class="round-head-layout">
+        <div style="flex:1; min-width:0">
+          <h2 style="font-family:Fraunces,serif;font-style:italic;font-weight:500;font-size:26px;margin:4px 0 2px">${escapeHtml(team.name)}</h2>
+          <p class="broadcast-line">${escapeHtml(event.broadcast)}</p>
+          <div class="ctx-note">${escapeHtml(ctx.blurb)}</div>
+        </div>
+        <div><span class="scope-chip ${scopeClass}">${escapeHtml(intensityLabel)}</span></div>
+      </div>
+    </div>
+
+    <div class="host-layout">
+      <div class="map-wrap" id="mapMount"></div>
+      <div class="host-side">
+        <div class="submit-tracker">
+          <h4>All teams</h4>
+          <div id="submitList"></div>
+        </div>
+      </div>
+    </div>
+
+    ${alreadySubmitted ? '<div class="info-banner auto-submit-info" style="margin-top:14px"><b>Submitted.</b> The round will resolve automatically when every team submits.</div>' : ''}
+
+    <div class="panel" style="margin-top:16px">
+      <h3 style="font-family:Fraunces,serif;font-style:italic;font-weight:500;font-size:20px;margin:0 0 8px">Sensor console</h3>
+      <p class="sub" style="margin-bottom:12px">Your station's readings. Compare to the safe thresholds.</p>
+      <div class="resource-bar">
+        <span class="res-pill"><span class="dot"></span>Intel <strong id="resCredits">${team.credits||0}</strong></span>
+        <span class="res-pill tokens"><span class="dot"></span>Tokens <strong id="resTokens">${team.tokens||0}</strong></span>
+      </div>
+      <div class="readings-grid" id="readingsGrid">
+        ${PARAMS.map(p => renderReadingCell(p, readings, team, event, exchanges)).join('')}
+      </div>
+
+      <div class="exchange" style="margin-top:16px">
+        <h4>Intel Exchange · 1 credit per request</h4>
+        <div class="xrow">
+          <select id="xStation">${extractTeams(room).filter(t => t.id !== team.id).map(t => `<option value="${t.id}">${escapeHtml(t.name)} (${escapeHtml(t.code)})</option>`).join('')}</select>
+          <select id="xParam">${PARAMS.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}</select>
+          <button id="xRequest" ${(team.credits||0)<=0 || alreadySubmitted ? 'disabled' : ''}>Request (-1)</button>
+        </div>
+        <div class="exchange-log" id="xLog">
+          ${renderExchangeLog(exchanges)}
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="answersPanel" style="margin-top:16px">
+      <h3 style="font-family:Fraunces,serif;font-style:italic;font-weight:500;font-size:20px;margin:0 0 12px">Submit your response</h3>
+      ${renderAnswersForm(event, subs[team.id], alreadySubmitted)}
+    </div>
+  `;
+
+  $('#mapMount').appendChild(renderMap(teams, event, true));
+  playPulse();
+  attachPlayerConsoleHandlers();
+  refreshSubmitList();
+  setFooter(pick(FLAVOR.preRoll));
+}
+
+function refreshLivePlaying(){
+  const room = localState.room;
+  const team = getMyTeam();
+  if (!team || !room || !room.round) return;
+  const round = room.round;
+
+  const cEl = $('#resCredits'); if (cEl) cEl.textContent = team.credits||0;
+  const tEl = $('#resTokens');  if (tEl) tEl.textContent = team.tokens||0;
+
+  const readings = round.event.readingsByTeam[team.code];
+  const readingsGrid = $('#readingsGrid');
+  if (readingsGrid && readings){
+    const exchanges = (room.exchanges && room.exchanges[round.index] && room.exchanges[round.index][team.id]) || {};
+    readingsGrid.innerHTML = PARAMS.map(p => renderReadingCell(p, readings, team, round.event, exchanges)).join('');
+  }
+
+  const xLog = $('#xLog');
+  if (xLog){
+    const exchanges = (room.exchanges && room.exchanges[round.index] && room.exchanges[round.index][team.id]) || {};
+    xLog.innerHTML = renderExchangeLog(exchanges);
+  }
+
+  const xBtn = $('#xRequest');
+  if (xBtn) xBtn.disabled = (team.credits||0) <= 0;
+
+  refreshSubmitList();
+
+  const subs = (room.submissions && room.submissions[round.index]) || {};
+  if (subs[team.id]){
+    const panel = $('#answersPanel');
+    if (panel && !panel.dataset.locked){
+      panel.dataset.locked = '1';
+      panel.querySelectorAll('input, button').forEach(el => el.disabled = true);
+      const submitBtn = $('#submitBtn');
+      if (submitBtn) submitBtn.textContent = 'Submitted';
+      if (!document.querySelector('.auto-submit-info')){
+        const banner = document.createElement('div');
+        banner.className = 'info-banner auto-submit-info';
+        banner.style.marginTop = '14px';
+        banner.innerHTML = '<b>Submitted.</b> The round will resolve automatically when every team submits.';
+        panel.parentNode.insertBefore(banner, panel);
+      }
+    }
+  }
+}
+
+function refreshSubmitList(){
+  const room = localState.room;
+  if (!room || !room.round) return;
+  const teams = extractTeams(room);
+  const subs = (room.submissions && room.submissions[room.round.index]) || {};
+  const list = $('#submitList');
+  if (!list) return;
+  list.innerHTML = '';
+  teams.forEach(t => {
+    const submitted = !!subs[t.id];
+    const row = document.createElement('div');
+    row.className = 'submit-row';
+    const chipClass = t.connected === false ? 'offline' : (submitted ? 'done' : 'pending');
+    const chipText = t.connected === false ? 'Offline' : (submitted ? 'Submitted' : 'Thinking');
+    const isMe = t.id === localState.myTeamId ? ' <span style="color:var(--cyan);font-size:10px;margin-left:4px">(you)</span>' : '';
+    row.innerHTML = `<span class="tid"><b>${escapeHtml(t.code)}</b>${escapeHtml(t.name)}${isMe}</span><span class="chip ${chipClass}">${chipText}</span>`;
+    list.appendChild(row);
+  });
+}
+
+function renderReadingCell(p, readings, team, event, exchanges){
+  const hiddenOnMe = event.hiddenParam === p.id && team.code === event.epicenterCode && !team.hiddenRevealed;
+  const val = readings[p.id];
+  const status = hiddenOnMe ? 'hidden' : classifyReadingStatus(p.id, val);
+  const cls = hiddenOnMe ? 'hidden' : (status === 'crit' ? 'crit' : status === 'warn' ? 'warn' : '');
+  let rangeText = '';
+  if (p.safeMin !== undefined && p.safeMax !== undefined) rangeText = `safe ${p.safeMin}–${p.safeMax}`;
+  else if (p.safeMax !== undefined) rangeText = `safe ≤ ${p.safeMax}`;
+  else if (p.safeMin !== undefined) rangeText = `safe ≥ ${p.safeMin}`;
+
+  return `
+    <div class="reading ${cls}">
+      <span class="p-name">${escapeHtml(p.name)}</span>
+      <span class="p-val">${hiddenOnMe ? '— offline —' : fmt(val, p.decimals) + (p.unit ? ' <span style="font-size:11px;color:var(--mute)">'+escapeHtml(p.unit)+'</span>' : '')}</span>
+      <span class="p-range">${rangeText}${p.unit && rangeText ? ' '+escapeHtml(p.unit) : ''}</span>
+      ${hiddenOnMe && (team.tokens||0) > 0 ? `<button class="reveal-btn" data-reveal="${p.id}">Use token</button>` : ''}
+    </div>
+  `;
+}
+
+function renderExchangeLog(exchanges){
+  const entries = Object.values(exchanges || {});
+  if (entries.length === 0) return '<div style="color:var(--mute)">No exchanges yet.</div>';
+  return entries.map(e => {
+    const p = PARAM_BY_ID[e.paramId];
+    const line = `${e.fromCode} · ${p.name}: ${fmt(e.value, p.decimals)}${p.unit ? ' '+p.unit : ''} (${e.status})`;
+    return `<div>· ${escapeHtml(line)}</div>`;
+  }).join('');
+}
+
+function renderAnswersForm(event, existingSub, disabled){
+  const sub = existingSub || { classification:null, thresholds:[], intervention:null, advisory:null };
+  const classOpts = event.classificationOpts.map(pid => PRESSURE_BY_ID[pid]);
+  const dis = disabled ? 'disabled' : '';
+
+  return `
+    <div class="q">
+      <div class="q-head"><span class="qtext">Q1 · Classify the pressure</span><span class="qpts">+3 pts</span></div>
+      <div class="opts" id="qClass">
+        ${classOpts.map(p => `
+          <label class="opt ${sub.classification===p.id?'selected':''}">
+            <input type="radio" name="qClass" value="${p.id}" ${sub.classification===p.id?'checked':''} ${dis}>
+            <span>${escapeHtml(p.name)}<span style="color:var(--mute); font-size:11.5px; display:block; margin-top:2px">${escapeHtml(p.blurb)}</span></span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="qtext">Q2 · Which parameters exceed safe thresholds? (All that apply.)</span><span class="qpts">+2 pts</span></div>
+      <div class="opts" id="qThresh">
+        ${PARAMS.map(p => {
+          const checked = sub.thresholds && sub.thresholds.includes(p.id);
+          return `
+          <label class="opt ${checked?'selected':''}">
+            <input type="checkbox" value="${p.id}" ${checked?'checked':''} ${dis}>
+            <span>${escapeHtml(p.name)} <span style="color:var(--mute); font-size:11.5px">(${p.safeMin!==undefined?'≥ '+p.safeMin:''}${p.safeMin!==undefined&&p.safeMax!==undefined?' – ':''}${p.safeMax!==undefined?'≤ '+p.safeMax:''}${p.unit?' '+escapeHtml(p.unit):''})</span></span>
+          </label>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="qtext">Q3 · Best first action</span><span class="qpts">+3 pts</span></div>
+      <div class="opts" id="qInterv">
+        ${event.interventionOpts.map(o => {
+          const checked = sub.intervention === o;
+          return `
+          <label class="opt ${checked?'selected':''}">
+            <input type="radio" name="qInterv" value="${encodeURIComponent(o)}" data-text="${escapeHtml(o)}" ${checked?'checked':''} ${dis}>
+            <span>${escapeHtml(o)}</span>
+          </label>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="qtext">Q4 · Community advisory</span><span class="qpts">+2 pts</span></div>
+      <div class="opts" id="qAdv">
+        ${event.advisoryOpts.map(o => {
+          const checked = sub.advisory === o;
+          return `
+          <label class="opt ${checked?'selected':''}">
+            <input type="radio" name="qAdv" value="${encodeURIComponent(o)}" data-text="${escapeHtml(o)}" ${checked?'checked':''} ${dis}>
+            <span>${escapeHtml(o)}</span>
+          </label>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div id="submitErr" class="error-banner hidden"></div>
+    <div class="row end-right" style="margin-top:12px">
+      <button class="primary" id="submitBtn" ${dis}>${disabled ? 'Submitted' : 'Submit response'}</button>
+    </div>
+  `;
+}
+
+function attachPlayerConsoleHandlers(){
+  ['#qClass','#qThresh','#qInterv','#qAdv'].forEach(sel => {
+    const group = $(sel);
+    if (!group) return;
+    group.addEventListener('change', e => {
+      playClick();
+      const inputs = group.querySelectorAll('input');
+      inputs.forEach(inp => {
+        const lbl = inp.closest('.opt');
+        if (!lbl) return;
+        if (inp.type === 'checkbox') lbl.classList.toggle('selected', inp.checked);
+        else lbl.classList.toggle('selected', inp.checked);
+      });
+    });
+  });
+
+  const readingsGrid = $('#readingsGrid');
+  if (readingsGrid){
+    readingsGrid.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.reveal-btn');
+      if (!btn) return;
+      await spendToken();
+    });
+  }
+
+  const xBtn = $('#xRequest');
+  if (xBtn){
+    xBtn.addEventListener('click', async () => {
+      const target = $('#xStation').value;
+      const param = $('#xParam').value;
+      await spendCredit(target, param);
+    });
+  }
+
+  const submitBtn = $('#submitBtn');
+  if (submitBtn && !submitBtn.disabled){
+    submitBtn.addEventListener('click', async () => {
+      await submitMyAnswers();
+    });
+  }
+}
+
+async function spendToken(){
+  const team = getMyTeam();
+  if (!team || (team.tokens||0) < 1){ flashErr('No verification tokens remaining.'); return; }
+  playReveal();
+  await update(ref(localState.db, roomPath(localState.roomCode, `teams/${team.id}`)), {
+    tokens: (team.tokens||0) - 1,
+    hiddenRevealed: true
+  });
+}
+
+async function spendCredit(targetTeamId, paramId){
+  const team = getMyTeam();
+  if (!team || (team.credits||0) < 1){ flashErr('No intel credits remaining.'); return; }
+  const target = (extractTeams(localState.room) || []).find(t => t.id === targetTeamId);
+  if (!target){ flashErr('Target team not found.'); return; }
+  const round = localState.room.round;
+  const targetReading = round.event.readingsByTeam[target.code][paramId];
+  const status = classifyReadingStatus(paramId, targetReading);
+  const exchangeRef = push(ref(localState.db, roomPath(localState.roomCode, `exchanges/${round.index}/${team.id}`)));
+  playReveal();
+  await Promise.all([
+    set(exchangeRef, {
+      paramId,
+      fromCode: target.code,
+      fromTeamId: target.id,
+      value: targetReading,
+      status,
+      t: serverTimestamp()
+    }),
+    update(ref(localState.db, roomPath(localState.roomCode, `teams/${team.id}`)), {
+      credits: (team.credits||0) - 1
+    })
+  ]);
+}
+
+function flashErr(msg){
+  openModal(`<h3>Not available</h3><p class="sub">${escapeHtml(msg)}</p><div class="row end-right"><button class="primary" id="ok">OK</button></div>`);
+  $('#ok').addEventListener('click', closeModal);
+}
+
+async function submitMyAnswers(){
+  const team = getMyTeam();
+  const round = localState.room.round;
+  const classEl = document.querySelector('input[name="qClass"]:checked');
+  const intervEl = document.querySelector('input[name="qInterv"]:checked');
+  const advEl = document.querySelector('input[name="qAdv"]:checked');
+  const thresholdsEls = document.querySelectorAll('#qThresh input[type="checkbox"]:checked');
+
+  if (!classEl || !intervEl || !advEl){
+    const err = $('#submitErr');
+    err.textContent = 'Please answer all four questions before submitting.';
+    err.classList.remove('hidden');
+    return;
+  }
+
+  const submission = {
+    classification: classEl.value,
+    thresholds: Array.from(thresholdsEls).map(el => el.value),
+    intervention: intervEl.dataset.text,
+    advisory: advEl.dataset.text,
+    submittedAt: serverTimestamp()
+  };
+
+  await set(ref(localState.db, roomPath(localState.roomCode, `submissions/${round.index}/${team.id}`)), submission);
+  playCorrect();
+}
+
+// =========================================================
+// LIVE RESOLUTION
+// =========================================================
+function renderLiveResolution(){
+  if (localState.advanceTimer){ clearInterval(localState.advanceTimer); localState.advanceTimer = null; }
+
+  const room = localState.room;
+  const team = getMyTeam();
+  if (!room.round) return;
+  const teams = extractTeams(room);
+  const round = room.round;
+  const event = round.event;
+  const pressure = PRESSURE_BY_ID[event.pressureId];
+  const resolutions = (room.resolutions && room.resolutions[round.index]) || {};
+  const mine = team ? resolutions[team.id] : null;
+
+  const sorted = [...teams].sort((a,b) => (b.score||0) - (a.score||0));
+  const myRank = team ? sorted.findIndex(t => t.id === team.id) + 1 : 0;
+  const correctExc = pressure.exceedances.map(id => PARAM_BY_ID[id].name).join(', ') || 'None';
+
+  const totalRounds = room.meta.totalRounds || 6;
+  const isLast = (round.index + 1) >= totalRounds;
+
+  stage.innerHTML = `
+    <div class="panel">
+      <div class="kicker">Round ${round.index+1}/${totalRounds} · Resolution</div>
+      <div class="true-type"><small>Correct classification</small>${escapeHtml(pressure.name)}</div>
+      <p class="sub" style="margin-top:6px; max-width:64ch">${escapeHtml(pressure.blurb)}</p>
+      <p class="note ital" style="font-family:Fraunces,serif;font-style:italic;color:var(--violet);margin-top:6px">${escapeHtml(pressure.flavor)}</p>
+
+      ${team && mine ? `
+      <div class="my-score-head">
+        <div><div class="lbl">Your round</div><div class="val">+${mine.total}</div></div>
+        <div><div class="lbl">Total</div><div class="val total">${team.score||0}</div></div>
+        <div><div class="lbl">Rank</div><div class="val rank">#${myRank}</div></div>
+      </div>
+      <div class="breakdown-mini">
+        <span>Classification +${mine.breakdown.classification||0}</span>
+        <span>Thresholds +${mine.breakdown.thresholds||0}</span>
+        <span>Intervention +${mine.breakdown.intervention||0}</span>
+        <span>Advisory +${mine.breakdown.advisory||0}</span>
+        ${mine.breakdown.crossBorder ? `<span class="xb">Cross-border +${mine.breakdown.crossBorder}</span>` : ''}
+      </div>` : ''}
+
+      <hr class="div">
+      <h4 style="font-family:Fraunces,serif;font-style:italic;font-weight:500;font-size:17px;margin:6px 0 10px">Correct answers</h4>
+      <div class="answer-box"><div class="answer-label">Intervention</div><div class="answer-value">${escapeHtml(pressure.intervention)}</div></div>
+      <div class="answer-box"><div class="answer-label">Advisory</div><div class="answer-value">${escapeHtml(pressure.advisory)}</div></div>
+      <div class="answer-box"><div class="answer-label">Parameters exceeded (strong exposure)</div><div class="answer-value">${escapeHtml(correctExc)}</div></div>
+
+      <hr class="div">
+      <h4 style="font-family:Fraunces,serif;font-style:italic;font-weight:500;font-size:17px;margin:6px 0 10px">All teams · Round ${round.index+1}</h4>
+      <div class="result-teams">
+        ${sorted.map(t => renderResultCardForTeam(t, resolutions[t.id] || null, t.id === localState.myTeamId)).join('')}
+      </div>
+
+      <div class="row" style="justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:22px">
+        <div class="sub" id="countdownText" style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--mute)">${isLast ? 'Showing final standings in' : 'Next round in'} <b id="countdownNum" style="color:var(--cyan); font-size:14px">20</b>s</div>
+        <button class="primary" id="continueBtn">${isLast ? 'Show final standings now →' : 'Continue now →'}</button>
+      </div>
+    </div>
+  `;
+
+  $('#continueBtn').addEventListener('click', async ()=>{
+    playTransition();
+    if (localState.advanceTimer){ clearInterval(localState.advanceTimer); localState.advanceTimer = null; }
+    await tryAutoAdvance();
+  });
+
+  localState.advanceCountdown = 20;
+  $('#countdownNum').textContent = String(localState.advanceCountdown);
+  localState.advanceTimer = setInterval(async () => {
+    localState.advanceCountdown -= 1;
+    const numEl = $('#countdownNum');
+    if (numEl) numEl.textContent = String(Math.max(0, localState.advanceCountdown));
+    if (localState.advanceCountdown <= 0){
+      clearInterval(localState.advanceTimer);
+      localState.advanceTimer = null;
+      await tryAutoAdvance();
+    }
+  }, 1000);
+
+  setFooter(pick(FLAVOR.afterPerfect));
+}
+
+function renderResultCardForTeam(team, res, isMe){
+  if (!res){
+    return `
+      <div class="result-team" ${isMe ? 'style="border-color:var(--cyan)"' : ''}>
+        <h4>${escapeHtml(team.code)} · ${escapeHtml(team.name)}${isMe ? ' <span style="color:var(--cyan);font-size:11px">(you)</span>' : ''}</h4>
+        <div class="sub" style="font-size:12.5px; color:var(--warn)">No submission</div>
+        <div class="sub" style="font-size:12px; margin-top:8px">Total: <b style="color:var(--text)">${team.score||0} pts</b></div>
+      </div>
+    `;
+  }
+  const b = res.breakdown || {};
+  return `
+    <div class="result-team" ${isMe ? 'style="border-color:var(--cyan);background:rgba(116,230,255,.05)"' : ''}>
+      <h4>${escapeHtml(team.code)} · ${escapeHtml(team.name)}${isMe ? ' <span style="color:var(--cyan);font-size:11px">(you)</span>' : ''}</h4>
+      <div class="score-block">
+        <span class="big-score">+${res.total || 0}</span>
+        <span class="max-score">of 10</span>
+      </div>
+      <div class="breakdown">
+        <div class="bd-row"><span>Classification</span><span>+${b.classification||0}/3</span></div>
+        <div class="bd-row"><span>Thresholds</span><span>+${b.thresholds||0}/2</span></div>
+        <div class="bd-row"><span>Intervention</span><span>+${b.intervention||0}/3</span></div>
+        <div class="bd-row"><span>Advisory</span><span>+${b.advisory||0}/2</span></div>
+        ${b.crossBorder ? `<div class="bd-row" style="color:var(--violet)"><span>Cross-border</span><span>+${b.crossBorder}</span></div>` : ''}
+      </div>
+      <div class="sub" style="font-size:12px; margin-top:8px">Total: <b style="color:var(--text)">${team.score||0} pts</b></div>
+    </div>
+  `;
+}
+
+// =========================================================
+// LIVE FINAL
+// =========================================================
+function renderLiveFinal(){
+  if (localState.advanceTimer){ clearInterval(localState.advanceTimer); localState.advanceTimer = null; }
+  const room = localState.room;
+  const team = getMyTeam();
+  const teams = extractTeams(room);
+  const sorted = [...teams].sort((a,b) => (b.score||0) - (a.score||0));
+  const top3 = sorted.slice(0,3);
+  const remaining = sorted.slice(3);
+  const myRank = team ? sorted.findIndex(t => t.id === team.id) + 1 : 0;
+
+  stage.innerHTML = `
+    <div class="panel">
+      <div class="kicker">Final standings</div>
+      <h2 style="font-family:Fraunces,serif;font-style:italic;font-weight:500;font-size:32px;margin:6px 0 6px">The watershed thanks you</h2>
+      <p class="sub">Six rounds · ${teams.length} monitoring stations · Cross-border intelligence moved</p>
+      ${team ? `<p class="sub" style="margin-top:8px">Your station <b>${escapeHtml(team.code)}</b> · ${escapeHtml(team.name)} finished <b>#${myRank}</b> with <b>${team.score||0} pts</b>.</p>` : ''}
+
+      <div class="podium">
+        ${top3[1] ? renderPod(top3[1], 2, 'second') : '<div></div>'}
+        ${top3[0] ? renderPod(top3[0], 1, 'first')  : '<div></div>'}
+        ${top3[2] ? renderPod(top3[2], 3, 'third')  : '<div></div>'}
+      </div>
+
+      ${remaining.length > 0 ? `
+      <h4 style="font-family:Fraunces,serif;font-style:italic;font-weight:500;font-size:18px;margin:20px 0 10px">Other positions</h4>
+      <div class="final-table">
+        ${remaining.map((t,i) => `
+          <div class="final-row ${team && t.id===team.id ? 'me' : ''}">
+            <span class="pos">#${i+4}</span>
+            <span class="cc">${escapeHtml(t.code)}</span>
+            <span class="nm">${escapeHtml(t.name)}</span>
+            <span class="sc">${t.score||0} pts</span>
+          </div>
+        `).join('')}
+      </div>` : ''}
+
+      <div class="row" style="margin-top:22px; justify-content:flex-end">
+        <button class="secondary" id="newGameBtn">Leave &amp; start a new game</button>
+      </div>
+    </div>
+  `;
+
+  $('#newGameBtn').addEventListener('click', ()=>{ playClick(); leaveRoom(); });
+  setFooter(pick(FLAVOR.generic));
+}
+
+function renderPod(team, rank, cls){
+  const rankNumeral = ['','I','II','III'][rank];
+  return `
+    <div class="pod ${cls}">
+      <div class="rank">${rankNumeral}</div>
+      <div class="name">${escapeHtml(team.name)}</div>
+      <div class="country-tag">${escapeHtml(team.code)}</div>
+      <div class="final-score">${team.score||0} <span style="font-size:12px;color:var(--mute)">pts</span></div>
+    </div>
+  `;
+}
+
+// =========================================================
+// LEAVE
+// =========================================================
+async function leaveRoom(){
+  if (localState.advanceTimer){ clearInterval(localState.advanceTimer); localState.advanceTimer = null; }
+  if (localState.myTeamId && localState.roomCode){
+    try { await update(ref(localState.db, roomPath(localState.roomCode, `teams/${localState.myTeamId}`)), { connected: false }); } catch(e){}
+  }
+  unsubscribeAll();
+  localState.roomCode = null;
+  localState.myTeamId = null;
+  localState.room = null;
+  localState.pendingRoomCode = null;
+  setSyncStatus('offline', 'Offline');
+  $('#syncPill').classList.add('hidden');
+  $('#leaveBtn').classList.add('hidden');
+  try { history.replaceState({}, '', location.pathname); } catch(e){}
+  go('home', renderHome);
+}
+
+// =========================================================
+// HEADER
+// =========================================================
+$('#audioToggle').addEventListener('click', ()=>{
+  localState.audioEnabled = !localState.audioEnabled;
+  $('#audioToggle').textContent = 'Audio: ' + (localState.audioEnabled ? 'On' : 'Off');
+  if (localState.audioEnabled){ unlockAudio(); ambientStart(); }
+  else ambientStop();
+});
+$('#howToBtn').addEventListener('click', ()=>{
+  unlockAudio(); playClick();
+  openModal(`
+    <h3>Confluence · How to play</h3>
+    <p class="sub">Each team plays on its own device. No host needed — rounds advance automatically.</p>
+    <ol class="htp-list" style="margin-top:12px">
+      <li><strong>Create or join a room</strong><p>The first team creates the room and shares the 4-letter code. Others join with the code or QR.</p></li>
+      <li><strong>Any team starts</strong><p>Once at least 2 teams are in the lobby, any team can press "Start game".</p></li>
+      <li><strong>Read your station</strong><p>You see your own readings only. Some may be hidden (use tokens).</p></li>
+      <li><strong>Trade across borders</strong><p>5 Intel Credits buy a specific parameter from a neighbouring team. 2 Verification Tokens unmask your hidden reading.</p></li>
+      <li><strong>Submit four decisions</strong><p>Classification · thresholds · intervention · advisory. Scoring is deterministic.</p></li>
+      <li><strong>Auto-resolve</strong><p>When every team submits, the round resolves automatically. The next round starts after a short countdown.</p></li>
+    </ol>
+    <hr class="div">
+    <p class="sub"><b>Scoring per round (10 pts):</b> +3 classification · +2 thresholds · +3 intervention · +2 advisory · +1 cross-border bonus (downstream team classifies correctly AND traded data).</p>
+    <div class="row end-right" style="margin-top:12px"><button class="primary" id="closeHowTo">Close</button></div>
+  `);
+  $('#closeHowTo').addEventListener('click', closeModal);
+});
+$('#leaveBtn').addEventListener('click', ()=>{
+  openModal(`<h3>Leave room?</h3><p class="sub">You will be disconnected. The other teams can continue without you.</p><div class="row end-right"><button class="secondary" id="cancelLeave">Cancel</button><button class="primary" id="confirmLeave">Leave</button></div>`);
+  $('#cancelLeave').addEventListener('click', closeModal);
+  $('#confirmLeave').addEventListener('click', ()=>{ closeModal(); leaveRoom(); });
+});
+
+// =========================================================
+// BOOT
+// =========================================================
+function detectMode(){
+  const url = new URL(location.href);
+  const room = (url.searchParams.get('room') || '').toUpperCase().trim();
+  if (room && /^[A-Z2-9]{4}$/.test(room)) return { mode:'join', room };
+  return { mode:'home' };
+}
+
+async function boot(){
+  const detected = detectMode();
+  if (detected.mode === 'join'){
+    if (!FIREBASE_CONFIG || !FIREBASE_CONFIG.apiKey){
+      go('home', ()=>{
+        renderHome();
+        const inp = $('#joinCodeInput');
+        if (inp){ inp.value = detected.room; }
+      });
+      return;
+    }
+    const saved = sessionStorage.getItem(`confluence.team.${detected.room}`);
+    if (saved){
+      try {
+        await initFirebase(FIREBASE_CONFIG);
+        setSyncStatus('online','Live');
+        $('#syncPill').classList.remove('hidden');
+        $('#leaveBtn').classList.remove('hidden');
+        const parsed = JSON.parse(saved);
+        const teamSnap = await get(ref(localState.db, roomPath(detected.room, `teams/${parsed.teamId}`)));
+        if (teamSnap.exists()){
+          localState.roomCode = detected.room;
+          localState.myTeamId = parsed.teamId;
+          const teamRef = ref(localState.db, roomPath(detected.room, `teams/${parsed.teamId}`));
+          await update(teamRef, { connected: true, uid: localState.myUid });
+          onDisconnect(teamRef).update({ connected: false });
+          subscribe(roomPath(detected.room), data => {
+            localState.room = data;
+            setSyncStatus('online','Live');
+            onRoomUpdate();
+          });
+          return;
+        } else {
+          sessionStorage.removeItem(`confluence.team.${detected.room}`);
+        }
+      } catch(err){ console.error('Reconnect failed:', err); }
+    }
+    go('picker', ()=>renderStationPicker('join', detected.room));
+  } else {
+    go('home', renderHome);
+  }
+}
+
+boot();
+
+
+</script>
+</body>
+</html>
