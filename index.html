@@ -900,7 +900,7 @@
   <div id="modal" class="modal"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.4.4/qrcode.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -2062,8 +2062,15 @@ function renderLobby(){
   `;
 
   const canvas = $('#qrCanvas');
-  if (window.QRCode){
-    QRCode.toCanvas(canvas, joinUrl, { width: 140, margin: 1, color: { dark: '#04101c', light: '#ffffff' } });
+  const qrBox = canvas ? canvas.parentNode : null;
+  if (canvas && window.QRCode && typeof QRCode.toCanvas === 'function'){
+    QRCode.toCanvas(canvas, joinUrl, { width: 140, margin: 1, color: { dark: '#04101c', light: '#ffffff' } }, (err) => {
+      if (err && qrBox){
+        qrBox.innerHTML = '<div style="padding:10px; text-align:center; color:var(--mute); font-size:11px; line-height:1.4">QR unavailable.<br>Share the code<br>or link below.</div>';
+      }
+    });
+  } else if (qrBox){
+    qrBox.innerHTML = '<div style="padding:10px; text-align:center; color:var(--mute); font-size:11px; line-height:1.4">QR unavailable.<br>Share the code<br>or link below.</div>';
   }
 
   $('#startGameBtn').addEventListener('click', async ()=>{
